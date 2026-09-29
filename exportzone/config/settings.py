@@ -92,6 +92,10 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    # WhiteNoise serves the collected /static/ files straight from the
+    # application process. It must be listed before django.contrib.staticfiles,
+    # otherwise staticfiles wins and its runserver handler takes over.
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     # Provides the built-in sitemap.xml/sitemap_index.xml templates that the
     # sitemap view renders; without it /sitemap.xml raises TemplateDoesNotExist.
@@ -106,6 +110,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # WhiteNoise answers /static/ before the view layer is reached, so it has to
+    # sit directly after SecurityMiddleware.
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -180,6 +187,36 @@ MEDIA_ROOT = BASE_DIR / "media"
 # handles those prefixes, set SERVE_STATIC_WITH_DJANGO=False - streaming files
 # through Python is noticeably slower than letting the web server do it.
 SERVE_STATIC_WITH_DJANGO = env_bool("SERVE_STATIC_WITH_DJANGO", True)
+
+# WhiteNoise serves the collected files from disk inside the app process, which
+# is both faster and lighter than streaming them through a Django view - this is
+# the difference between a visitor waiting on Python and waiting on a file read.
+# "compressed" turns on gzip/brotli for text, "cached" adds far-future headers.
+# STORAGES replaces Django 4.2+; the STATICFILES_STORAGE alias is kept so older
+# tooling that still reads it does not silently fall back to a filesystem scan.
+WHITENOISE_AUTOREFRESH = env_bool("WHITENOISE_AUTOREFRESH", not DEBUG)
+WHITENOISE_MAX_AGE = int(os.getenv("WHITENOISE_MAX_AGE", "0" if DEBUG else "31536000"))
+
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    # media/ still needs a writable location, but every file that goes in is
+    # already an allowed image (see ALLOWED_IMAGE_CONTENT_TYPES), so it is
+    # served as-is without extra processing.
+    "staticfiles": {
+        # CompressedStaticFilesStorage, deliberately NOT the *Manifest* variant.
+        # The manifest build renames every collected file to a content hash,
+        # which is excellent for cache-busting but hard-fails the moment a
+        # template calls static() for a file that has not been collected yet
+        # ("Missing staticfiles manifest entry"). That breaks the test suite and
+        # any dev server started before the first collectstatic run. Plain
+        # Compressed gives the same gzip/brotli compression and the same
+        # fast local file reads; only the hashed filenames are given up, and the
+        # templates reference fixed names like "css/site.css" anyway.
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+# Kept for compatibility with anything still reading the old name.
+STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
 
 # ---------------------------------------------------------------------------
 # Django admin theme (django-jazzmin) — gold-on-ink skin that matches the
