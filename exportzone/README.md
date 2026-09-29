@@ -4,9 +4,9 @@ Premium clothing e-commerce for Meherpur, Bangladesh, built as a server-rendered
 
 ## Technology
 
-- Python 3.12+ and Django 5
+- Python 3.10+ and Django 5.2 (the shared host runs the version pinned in `runtime.txt`)
 - Django templates, Tailwind CSS, and progressive vanilla JavaScript
-- SQLite for local development; PostgreSQL through `DATABASE_URL` in production
+- SQLite as the only supported database (`db.sqlite3` beside `manage.py`)
 - django-jazzmin for the branded Django admin console at `/admin/`
 - Pillow for product images and python-dotenv for environment configuration
 
@@ -68,6 +68,4 @@ exportzone/
 
 ## Production notes
 
-Use a PostgreSQL `DATABASE_URL`, set `DEBUG=False`, restrict `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS`, use SMTP credentials from the deployment environment, run `collectstatic`, and serve static/media files through the deployment platform. Leave `DATABASE_URL` blank locally to use the path-safe SQLite database. The security-cookie and HSTS defaults activate when debug mode is disabled.
-
-Future project commands will include `seed_data` and the standard `createsuperuser` command once the relevant models are introduced.
+Set `DEBUG=False`, restrict `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS`, use SMTP credentials from the deployment environment, run `collectstatic`, and serve static/media through the deployment platform. SQLite (`exportzone/db.sqlite3`) is the only supported database — back it up regularly. The security-cookie and HSTS defaults activate when debug mode is disabled.

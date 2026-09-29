@@ -356,6 +356,20 @@ if env_bool("TRUST_X_FORWARDED_PROTO", False):
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+
+# Uploaded catalogue images. apps/admin_dashboard/forms.py accepts a 5 MB image and
+# explains the limit in a readable validation error, but Django's own ceiling is
+# 2.5 MB: anything larger was rejected with a bare "RequestDataTooBig" before the
+# form ever ran, so the friendly message was unreachable. Raising both to the same
+# 5 MB makes the limit consistent. DATA_UPLOAD_MAX_NUMBER_FIELDS is raised for the
+# same reason - a large catalogue form can legitimately carry a few hundred fields.
+MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "5"))
+DATA_UPLOAD_MAX_MEMORY_SIZE = MAX_UPLOAD_MB * 1024 * 1024
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
+# The web server caps the request body separately (Passenger/nginx); this is the
+# in-process backstop, so a direct WSGI call cannot stream an unbounded body either.
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024
+
 # Order URLs leak the admin/cart paths to third parties through the Referer header;
 # the strict-origin form keeps the site itself usable while dropping the path.
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
