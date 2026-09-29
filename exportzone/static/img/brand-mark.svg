@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="EXPORT ZONE">
+  <circle cx="32" cy="32" r="30" fill="#08090c" stroke="#d4af37" stroke-width="3"/>
+  <path d="M32 15 49 32 32 49 15 32Z" fill="none" stroke="#d4af37" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="32" cy="32" r="3.5" fill="#d4af37"/>
+</svg>

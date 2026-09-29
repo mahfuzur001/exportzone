@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="Create your account | Export Zone" %}{% seo_meta %}{% endblock %}
+{% block content %}
+<section class="auth-page">
+    <div class="auth-card wide">
+        <div class="auth-mark">
+            <span class="crown">&#9819;</span>
+            <span class="monogram">E</span>
+            <span class="wordmark">Export Zone</span>
+            <span class="sub">Premium Clothing</span>
+        </div>
+        <div class="auth-ornament"><span>Join the house</span></div>
+        <h1>Create your account</h1>
+        <p class="auth-intro">Enjoy order tracking, faster checkout and early access to every new drop.</p>
+
+        {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <form method="post" class="auth-form" novalidate>
+            {% csrf_token %}
+            <div class="form-field {% if form.full_name.errors %}has-error{% endif %}">
+                <label for="{{ form.full_name.id_for_label }}">Full name</label>
+                {{ form.full_name }}
+                {% for error in form.full_name.errors %}<p class="field-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="form-field {% if form.email.errors %}has-error{% endif %}">
+                <label for="{{ form.email.id_for_label }}">Email address</label>
+                {{ form.email }}
+                {% for error in form.email.errors %}<p class="field-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="form-field {% if form.phone.errors %}has-error{% endif %}">
+                <label for="{{ form.phone.id_for_label }}">Phone number</label>
+                {{ form.phone }}
+                {% for error in form.phone.errors %}<p class="field-errors">{{ error }}</p>{% endfor %}
+                <p class="help-text">11 digits, e.g. 01712345678</p>
+            </div>
+            <div class="form-field {% if form.password1.errors %}has-error{% endif %}">
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                <div class="password-field">
+                    {{ form.password1 }}
+                    <button class="password-toggle" type="button" data-password-toggle="{{ form.password1.id_for_label }}" aria-pressed="false">Show</button>
+                </div>
+                {% for error in form.password1.errors %}<p class="field-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="form-field {% if form.password2.errors %}has-error{% endif %}">
+                <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+                <div class="password-field">
+                    {{ form.password2 }}
+                    <button class="password-toggle" type="button" data-password-toggle="{{ form.password2.id_for_label }}" aria-pressed="false">Show</button>
+                </div>
+                {% for error in form.password2.errors %}<p class="field-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="form-field {% if form.agree_to_terms.errors %}has-error{% endif %}">
+                <label class="checkbox-field">{{ form.agree_to_terms }}<span>{{ form.agree_to_terms.label }}</span></label>
+                {% for error in form.agree_to_terms.errors %}<p class="field-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <button class="auth-submit" type="submit">Create account</button>
+        </form>
+
+        <p class="auth-links">Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a></p>
+        <p class="auth-note">You will receive a welcome email the moment your account is created.</p>
+    </div>
+</section>
+{% endblock %}

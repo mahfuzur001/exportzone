@@ -1,0 +1,10 @@
+<!doctype html>
+<html>
+<body style="background:#0b0b0b;color:#f8f3e8;font-family:Arial,sans-serif;padding:32px">
+  <h1 style="color:#d8a83f">EXPORT ZONE</h1>
+  <p>Hello {{ order.user.full_name }},</p>
+  <p>Your order <strong>{{ order.order_number }}</strong> is now <strong style="color:#d8a83f">{{ status_label }}</strong>.</p>
+  <p><strong>Total:</strong> ৳{{ order.total_amount|floatformat:2 }}</p>
+  <p><a href="{{ order_url }}" style="color:#d8a83f">View order details</a></p>
+</body>
+</html>

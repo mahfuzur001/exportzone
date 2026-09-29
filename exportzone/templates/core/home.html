@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="Export Zone | Premium Clothing from Meherpur" %}{% seo_meta %}{% endblock %}
+{% block content %}
+<section class="relative overflow-hidden border-b border-white/10">
+    <div class="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-gold/10 blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-40 right-0 h-[26rem] w-[26rem] rounded-full bg-gold/[0.07] blur-3xl" aria-hidden="true"></div>
+    <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-6 lg:py-24">
+        <div>
+            <p class="text-[0.6rem] uppercase tracking-[0.42em] text-gold/85">Meherpur, Bangladesh &mdash; Export house</p>
+            <h1 class="mt-5 font-heading text-4xl leading-[1.06] text-cream md:text-5xl xl:text-6xl">
+                Premium quality,<br>
+                <span class="text-gold">crafted for distinction.</span>
+            </h1>
+            <p class="mt-6 max-w-xl leading-relaxed text-cream/65">Discover premium jeans, shirts and polo t-shirts crafted for comfort, style and distinction.</p>
+            <div class="mt-8 flex flex-wrap gap-4">
+                <a href="{% url 'store:shop' %}" class="border border-gold bg-gradient-to-r from-[#ba8428] via-gold to-[#b67e25] px-8 py-3.5 text-[0.68rem] font-bold uppercase tracking-[0.3em] text-ink transition hover:brightness-110">Shop now</a>
+                <a href="{% url 'store:about' %}" class="border border-white/25 px-8 py-3.5 text-[0.68rem] font-bold uppercase tracking-[0.3em] text-cream transition hover:border-gold hover:text-gold">Our story</a>
+            </div>
+            <ul class="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-[0.62rem] uppercase tracking-[0.28em] text-cream/50">
+                <li>Premium fabrics</li>
+                <li>Expert craftsmanship</li>
+                <li>Built to last</li>
+            </ul>
+        </div>
+        <div class="relative hidden h-[26rem] lg:block" aria-hidden="true">
+            <div class="absolute right-6 top-2 h-72 w-56 rotate-6 border border-gold/40 bg-gradient-to-b from-white/[0.08] to-transparent p-5 shadow-[0_30px_60px_rgba(0,0,0,0.45)]">
+                <span class="block text-[0.55rem] uppercase tracking-[0.4em] text-gold/80">Export Zone</span>
+                <span class="mt-2 block font-heading text-2xl text-cream">Signature Denim</span>
+                <span class="mt-1 block text-xs text-cream/50">Indigo rinse &middot; tapered fit</span>
+                <span class="absolute bottom-5 left-5 text-sm font-semibold text-gold">৳ 2,499.00</span>
+            </div>
+            <div class="absolute bottom-4 left-2 h-64 w-52 -rotate-3 border border-white/15 bg-gradient-to-b from-white/[0.05] to-transparent p-5 shadow-[0_30px_60px_rgba(0,0,0,0.45)]">
+                <span class="block text-[0.55rem] uppercase tracking-[0.4em] text-cream/50">New season</span>
+                <span class="mt-2 block font-heading text-2xl text-cream">Polo Edit</span>
+                <span class="mt-1 block text-xs text-cream/50">Pique cotton &middot; gold tipped</span>
+                <span class="absolute bottom-5 left-5 text-sm font-semibold text-gold">৳ 1,299.00</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mx-auto max-w-7xl px-4 py-14 lg:px-6">
+    <div class="mb-8 flex items-end justify-between gap-4">
+        <div>
+            <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">Curated by category</p>
+            <h2 class="mt-2 font-heading text-2xl text-cream md:text-3xl">Shop by category</h2>
+        </div>
+        <a href="{% url 'store:shop' %}" class="hidden text-[0.62rem] uppercase tracking-[0.28em] text-gold transition hover:text-pale-gold sm:inline">View all &rarr;</a>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {% for category in categories %}
+        <a href="{% url 'store:shop' %}?category={{ category.slug }}" class="group relative flex h-44 flex-col justify-end overflow-hidden border border-white/10 bg-gradient-to-br from-white/[0.06] via-transparent to-gold/10 p-5 transition hover:border-gold/60">
+            {% if category.image %}
+            <img src="{{ category.image.url }}" alt="{{ category.name }}" class="absolute inset-0 h-full w-full object-cover opacity-40 transition duration-500 group-hover:scale-105">
+            {% endif %}
+            <span class="absolute right-3 top-1 font-heading text-6xl text-white/[0.06]" aria-hidden="true">{{ category.name|slice:":1" }}</span>
+            <span class="relative text-[0.52rem] uppercase tracking-[0.34em] text-cream/50">{{ category.product_count }} product{{ category.product_count|pluralize }}</span>
+            <span class="relative mt-1 font-heading text-xl text-cream transition group-hover:text-gold">{{ category.name }}</span>
+            <span class="relative mt-2 text-[0.58rem] uppercase tracking-[0.3em] text-gold">Explore &rarr;</span>
+        </a>
+        {% empty %}
+        <p class="text-sm text-cream/50">Fresh categories are being prepared.</p>
+        {% endfor %}
+    </div>
+</section>
+<section class="mx-auto max-w-7xl px-4 pb-6 lg:px-6">
+    <div class="mb-8 flex items-end justify-between gap-4">
+        <div>
+            <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">Handpicked for you</p>
+            <h2 class="mt-2 font-heading text-2xl text-cream md:text-3xl">Featured products</h2>
+        </div>
+        <a href="{% url 'store:shop' %}" class="text-[0.62rem] uppercase tracking-[0.28em] text-gold transition hover:text-pale-gold">View all &rarr;</a>
+    </div>
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {% for product in featured_products %}
+        {% include "store/components/product_card.html" with product=product %}
+        {% empty %}
+        <p class="col-span-full border border-dashed border-white/15 px-4 py-10 text-center text-sm text-cream/55">New pieces are being prepared. Check back soon.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="mx-auto max-w-7xl px-4 py-14 lg:px-6">
+    <div class="mb-8 flex items-end justify-between gap-4">
+        <div>
+            <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">Fresh off the line</p>
+            <h2 class="mt-2 font-heading text-2xl text-cream md:text-3xl">New arrivals</h2>
+        </div>
+        <a href="{% url 'store:shop' %}?sort=newest" class="text-[0.62rem] uppercase tracking-[0.28em] text-gold transition hover:text-pale-gold">Explore new arrivals &rarr;</a>
+    </div>
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {% for product in new_arrivals %}
+        {% include "store/components/product_card.html" with product=product %}
+        {% empty %}
+        <p class="col-span-full border border-dashed border-white/15 px-4 py-10 text-center text-sm text-cream/55">The next drop is almost here.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="border-y border-gold/25 bg-gradient-to-r from-gold/[0.08] via-transparent to-gold/[0.08]">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4 lg:px-6">
+        <div class="flex items-center gap-4">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-gold/50 text-gold">&#10022;</span>
+            <span><strong class="block font-heading text-base text-cream">Premium Fabrics</strong><small class="text-[0.68rem] uppercase tracking-[0.2em] text-cream/45">Sourced with care</small></span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-gold/50 text-gold">&#9998;</span>
+            <span><strong class="block font-heading text-base text-cream">Expert Craftsmanship</strong><small class="text-[0.68rem] uppercase tracking-[0.2em] text-cream/45">Stitched to endure</small></span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-gold/50 text-gold">৳</span>
+            <span><strong class="block font-heading text-base text-cream">Cash on Delivery</strong><small class="text-[0.68rem] uppercase tracking-[0.2em] text-cream/45">Pay at your door</small></span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-gold/50 text-gold">&#10148;</span>
+            <span><strong class="block font-heading text-base text-cream">Nationwide Delivery</strong><small class="text-[0.68rem] uppercase tracking-[0.2em] text-cream/45">Free shipping, always</small></span>
+        </div>
+    </div>
+</section>
+
+<section class="mx-auto max-w-7xl px-4 py-14 lg:px-6">
+    <div class="mb-8">
+        <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">Why shop with us</p>
+        <h2 class="mt-2 font-heading text-2xl text-cream md:text-3xl">Why Export Zone?</h2>
+    </div>
+    <div class="grid gap-4 md:grid-cols-3">
+        <article class="border border-white/10 bg-white/[0.03] p-6 transition hover:border-gold/50">
+            <span class="text-[0.55rem] uppercase tracking-[0.35em] text-gold">01</span>
+            <h3 class="mt-3 font-heading text-lg text-cream">Premium quality</h3>
+            <p class="mt-2 text-sm leading-relaxed text-cream/55">Every stitch is inspected before it earns the Export Zone label &mdash; denim, shirting and pique built to last.</p>
+        </article>
+        <article class="border border-white/10 bg-white/[0.03] p-6 transition hover:border-gold/50">
+            <span class="text-[0.55rem] uppercase tracking-[0.35em] text-gold">02</span>
+            <h3 class="mt-3 font-heading text-lg text-cream">Cash on delivery</h3>
+            <p class="mt-2 text-sm leading-relaxed text-cream/55">Order today, pay when it reaches your door. Free shipping on every order across Bangladesh.</p>
+        </article>
+        <article class="border border-white/10 bg-white/[0.03] p-6 transition hover:border-gold/50">
+            <span class="text-[0.55rem] uppercase tracking-[0.35em] text-gold">03</span>
+            <h3 class="mt-3 font-heading text-lg text-cream">Secure shopping</h3>
+            <p class="mt-2 text-sm leading-relaxed text-cream/55">Your data stays protected with encrypted sessions, hashed passwords and secure member accounts.</p>
+        </article>
+    </div>
+</section>
+{% endblock %}

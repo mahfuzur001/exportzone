@@ -1,0 +1,8 @@
+# Runtime dependencies only. The deployment package is built from this file,
+# so the test tooling lives in requirements-dev.txt and is never installed on
+# the shared host.
+Django>=5.2,<6.0
+django-jazzmin>=3.0,<4.0
+Pillow>=11.0,<12.0
+python-dotenv>=1.0,<2.0
+

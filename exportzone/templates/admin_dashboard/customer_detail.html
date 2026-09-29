@@ -1,0 +1,35 @@
+{% extends "admin_dashboard/base.html" %}
+{% block heading %}{{ customer.full_name }}{% endblock %}
+{% block content %}
+<div class="admin-detail-grid">
+  <section class="admin-panel">
+    <h2>Customer profile</h2>
+    <p>
+      {{ customer.full_name }}<br>
+      {{ customer.email }}<br>
+      {{ customer.phone }}<br>
+      Joined {{ customer.date_joined|date:"M d, Y" }}<br>
+      Orders: {{ customer.order_count|default:0 }}<br>
+      Lifetime value: ৳{{ customer.order_value|default:0|floatformat:2 }}<br>
+      Status: {{ customer.is_active|yesno:"Active,Inactive" }}
+    </p>
+    <form method="post" action="{% url 'admin_dashboard:customer_toggle_active' customer.pk %}">
+      {% csrf_token %}
+      <button class="button button-outline" type="submit">
+        {% if customer.is_active %}Deactivate account{% else %}Activate account{% endif %}
+      </button>
+    </form>
+  </section>
+  <section class="admin-panel">
+    <h2>Recent orders</h2>
+    {% for order in orders %}
+    <a class="order-row" href="{% url 'admin_dashboard:order_detail' order.order_number %}">
+      <span>{{ order.order_number }}<small>{{ order.created_at|date:"M d, Y" }}</small></span>
+      <span>৳{{ order.total_amount|floatformat:2 }}</span>
+    </a>
+    {% empty %}
+    <p class="admin-empty">No orders.</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

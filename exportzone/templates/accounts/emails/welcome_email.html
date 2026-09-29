@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><body style="margin:0;background:#090b0e;color:#f8f3e8;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#090b0e;padding:32px 12px;"><tr><td align="center">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:580px;background:#11151a;border:1px solid #80672f;">
+      <tr><td style="border-bottom:1px solid #4f4428;padding:30px 34px;text-align:center;">
+        <div style="color:#d8a83f;font-family:Georgia,'Times New Roman',serif;font-size:23px;letter-spacing:4px;">EXPORT ZONE</div>
+        <div style="color:#928d82;font-size:10px;letter-spacing:3px;margin-top:7px;text-transform:uppercase;">Premium Clothing</div>
+      </td></tr>
+      <tr><td style="padding:34px 34px 26px;color:#f8f3e8;">
+        <p style="color:#d8a83f;font-size:10px;letter-spacing:3px;margin:0 0 14px;text-transform:uppercase;">Account created successfully</p>
+        <h1 style="font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:29px;line-height:1.2;margin:0 0 16px;">Welcome to the house, {{ user.full_name }}.</h1>
+        <p style="font-size:15px;line-height:1.7;margin:0 0 16px;">Thank you for joining <strong style="color:#f4ce70;">EXPORT ZONE</strong>. Your member account is active and ready to use &mdash; there is nothing left for you to confirm.</p>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#0c1014;border:1px solid #333c46;margin:0 0 20px;">
+          <tr><td style="padding:16px 18px;font-size:13px;line-height:1.75;">
+            <div style="color:#928d82;font-size:10px;letter-spacing:2px;text-transform:uppercase;">Your sign-in details</div>
+            <div style="margin-top:8px;">Email: <strong style="color:#f4ce70;">{{ user.email }}</strong></div>
+            <div>Phone: <strong style="color:#f4ce70;">{{ user.phone }}</strong></div>
+            <div style="color:#928d82;">Password: the one you chose &mdash; we never send passwords by email.</div>
+          </td></tr>
+        </table>
+        <p style="font-size:15px;line-height:1.7;margin:0 0 10px;">With your account you can:</p>
+        <ul style="font-size:14px;line-height:1.9;margin:0 0 22px;padding-left:20px;">
+          <li>Track every order from checkout to your doorstep.</li>
+          <li>Save delivery addresses for a faster checkout.</li>
+          <li>Review your order history whenever you need it.</li>
+        </ul>
+        <p style="margin:0 0 10px;text-align:center;"><a href="{{ shop_url }}" style="background:#d8a83f;color:#111111;display:inline-block;font-weight:bold;letter-spacing:1px;padding:14px 24px;text-decoration:none;">START SHOPPING</a></p>
+        <p style="font-size:13px;line-height:1.7;margin:0 0 18px;text-align:center;color:#b8b3a8;">Already on the site? <a href="{{ login_url }}" style="color:#f4ce70;">Sign in to your account</a></p>
+        <p style="font-size:13px;line-height:1.7;margin:0;color:#b8b3a8;">Cash on delivery &middot; Free shipping across Bangladesh &middot; Every stitch inspected before it earns the EXPORT ZONE label.</p>
+      </td></tr>
+      <tr><td style="border-top:1px solid #4f4428;color:#928d82;font-size:11px;line-height:1.7;padding:18px 34px;text-align:center;">
+        Questions about your account? <a href="{{ contact_url }}" style="color:#f4ce70;">Contact our team</a>.<br>
+        EXPORT ZONE &middot; Premium Quality. Premium You.
+      </td></tr>
+    </table>
+  </td></tr></table>
+</body></html>

@@ -1,0 +1,402 @@
+/* ==========================================================================
+   EXPORT ZONE — Jazzmin admin skin
+   Gold (#d4af37) on ink (#08090c), matching static/css/site.css branding.
+   Loaded through JAZZMIN_SETTINGS["custom_css"] = "css/admin_brand.css".
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap");
+
+:root,
+[data-bs-theme="light"],
+[data-bs-theme="dark"] {
+    --ez-ink: #08090c;
+    --ez-charcoal: #111218;
+    --ez-panel: #15161c;
+    --ez-panel-soft: #1b1c23;
+    --ez-gold: #d4af37;
+    --ez-gold-soft: #f0d27a;
+    --ez-pale-gold: #f59e0b;
+    --ez-cream: #f7f2e7;
+    --ez-line: rgba(212, 175, 55, 0.26);
+    --ez-line-strong: rgba(212, 175, 55, 0.55);
+
+    --bs-primary: #d4af37;
+    --bs-primary-rgb: 212, 175, 55;
+    --bs-link-color: #d4af37;
+    --bs-link-color-rgb: 212, 175, 55;
+    --bs-link-hover-color: #f0d27a;
+    --bs-body-font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-body-bg: #08090c;
+    --bs-body-color: #f7f2e7;
+    --bs-body-color-rgb: 247, 242, 231;
+    --bs-secondary-bg: #111218;
+    --bs-tertiary-bg: #15161c;
+    --bs-border-color: rgba(212, 175, 55, 0.22);
+    --bs-border-color-translucent: rgba(212, 175, 55, 0.18);
+    --bs-emphasis-color: #f7f2e7;
+}
+
+body,
+.app-wrapper,
+.app-main,
+.app-content,
+.content,
+.bg-body,
+.bg-body-secondary,
+.bg-body-tertiary {
+    background-color: var(--ez-ink) !important;
+    color: var(--ez-cream);
+}
+
+h1, h2, h3, h4, h5, h6,
+.modal-title,
+.app-content-header h1,
+.content-header h1,
+.login-logo,
+.brand-text {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 600;
+    color: var(--ez-cream);
+    letter-spacing: 0.01em;
+}
+
+a { color: var(--ez-gold); }
+a:hover, a:focus { color: var(--ez-gold-soft); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--ez-ink); }
+::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.6); }
+
+/* ------------------------------------------------------------------ header */
+.app-header.navbar {
+    background-color: var(--ez-charcoal) !important;
+    border-bottom: 1px solid var(--ez-line);
+    backdrop-filter: blur(8px);
+}
+
+.app-header .nav-link,
+.app-header .navbar-nav .nav-link {
+    color: rgba(247, 242, 231, 0.78);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+}
+
+.app-header .nav-link:hover,
+.app-header .nav-link:focus,
+.app-header .navbar-nav .nav-link:hover {
+    color: var(--ez-gold);
+}
+
+.app-header .dropdown-menu {
+    background-color: var(--ez-panel);
+    border: 1px solid var(--ez-line);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+.app-header .dropdown-item { color: rgba(247, 242, 231, 0.82); }
+.app-header .dropdown-item:hover,
+.app-header .dropdown-item:focus { background-color: rgba(212, 175, 55, 0.12); color: var(--ez-gold); }
+.app-header .dropdown-divider { border-color: var(--ez-line); }
+.app-header .dropdown-header { color: var(--ez-gold); text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.6rem; }
+
+/* ----------------------------------------------------------------- sidebar */
+.app-sidebar {
+    background-color: #0b0c11 !important;
+    border-right: 1px solid var(--ez-line);
+    box-shadow: none !important;
+}
+
+.app-sidebar .sidebar-brand,
+.app-sidebar .brand-link {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--ez-line) !important;
+    color: var(--ez-cream) !important;
+    padding: 0.9rem 1rem;
+}
+
+.app-sidebar .brand-link:hover { color: var(--ez-gold) !important; }
+
+.app-sidebar .brand-text {
+    font-family: "Playfair Display", Georgia, serif;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.78rem;
+    color: var(--ez-gold);
+}
+
+.app-sidebar .nav.sidebar-menu .nav-link {
+    color: rgba(247, 242, 231, 0.72);
+    font-size: 0.74rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-left: 2px solid transparent;
+    border-radius: 0;
+    transition: all 0.18s ease;
+}
+
+.app-sidebar .nav.sidebar-menu .nav-link:hover,
+.app-sidebar .nav.sidebar-menu .nav-link:focus {
+    background-color: rgba(212, 175, 55, 0.08);
+    border-left-color: var(--ez-line-strong);
+    color: var(--ez-gold);
+}
+
+.app-sidebar .nav.sidebar-menu .nav-link.active,
+.app-sidebar .nav.sidebar-menu .nav-link[aria-expanded="true"] {
+    background-color: rgba(212, 175, 55, 0.12);
+    border-left-color: var(--ez-gold);
+    color: var(--ez-gold);
+    font-weight: 600;
+}
+
+.app-sidebar .nav.sidebar-menu .nav-link .nav-icon,
+.app-sidebar .nav.sidebar-menu .nav-link i { color: inherit; width: 1.35rem; text-align: center; }
+
+.sidebar-menu .nav-treeview .nav-link,
+.sidebar-menu .nav-treeview .nav-link:not(.active) {
+    color: rgba(247, 242, 231, 0.6);
+    font-size: 0.72rem;
+    text-transform: none;
+    letter-spacing: 0.03em;
+}
+
+.sidebar-menu .nav-treeview .nav-link.active,
+.sidebar-menu .nav-treeview .nav-link:hover { color: var(--ez-gold); background-color: rgba(212, 175, 55, 0.08); }
+
+.app-sidebar .nav-link p,
+.app-sidebar .nav-link span { margin: 0; }
+
+/* ---------------------------------------------------------- content + cards */
+.app-content-header {
+    border-bottom: 1px solid var(--ez-line);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.app-content-header h1 {
+    font-size: 1.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.breadcrumb { --bs-breadcrumb-divider-color: rgba(212, 175, 55, 0.5); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.16em; }
+.breadcrumb-item, .breadcrumb-item a { color: rgba(247, 242, 231, 0.55); text-decoration: none; }
+.breadcrumb-item a:hover { color: var(--ez-gold); }
+.breadcrumb-item.active { color: var(--ez-gold); }
+
+.card {
+    background-color: var(--ez-panel);
+    border: 1px solid var(--ez-line);
+    border-radius: 2px;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+}
+
+.card-header, .card-footer {
+    background-color: var(--ez-charcoal);
+    border-color: var(--ez-line);
+    color: var(--ez-cream);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+}
+
+.card-title { font-size: 0.95rem; margin: 0; }
+
+.module { background-color: var(--ez-panel); border: 1px solid var(--ez-line); border-radius: 2px; }
+.module h2, .module caption, .inline-group h2 {
+    background-color: var(--ez-charcoal);
+    color: var(--ez-gold);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+/* ------------------------------------------------------------------- tables */
+.table { --bs-table-color: rgba(247, 242, 231, 0.88); --bs-table-bg: transparent; border-color: var(--ez-line); }
+.table > thead > tr > th, .table > thead > tr > td, thead th {
+    background-color: var(--ez-charcoal);
+    color: var(--ez-gold);
+    border-color: var(--ez-line);
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.table > tbody > tr > td { border-color: rgba(247, 242, 231, 0.08); vertical-align: middle; }
+.table > tbody > tr:hover > * { background-color: rgba(212, 175, 55, 0.07); color: var(--ez-cream); }
+.table a { color: var(--ez-cream); text-decoration: none; }
+.table a:hover { color: var(--ez-gold); }
+.table .text-muted, .table .mini { color: rgba(247, 242, 231, 0.45) !important; }
+
+/* ------------------------------------------------------------------ buttons */
+.btn-primary, .btn-warning {
+    background-color: var(--ez-gold);
+    border-color: var(--ez-gold);
+    color: #08090c;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active,
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active {
+    background-color: var(--ez-gold-soft);
+    border-color: var(--ez-gold-soft);
+    color: #08090c;
+}
+
+.btn-outline-warning { border-color: var(--ez-line-strong); color: var(--ez-gold); }
+.btn-outline-warning:hover { background-color: var(--ez-gold); border-color: var(--ez-gold); color: #08090c; }
+.btn-outline-light { border-color: rgba(247, 242, 231, 0.3); color: var(--ez-cream); }
+.btn-outline-light:hover { background-color: var(--ez-cream); border-color: var(--ez-cream); color: #08090c; }
+.btn:focus, .btn:focus-visible { box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.35) !important; }
+
+.object-tools a, .object-tools a:link, .object-tools a:visited {
+    background-color: transparent;
+    border: 1px solid var(--ez-line-strong);
+    border-radius: 0;
+    color: var(--ez-gold);
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.object-tools a:hover, .object-tools a:focus {
+    background-color: var(--ez-gold);
+    border-color: var(--ez-gold);
+    color: #08090c;
+}
+
+
+/* -------------------------------------------------------------------- forms */
+.form-control, .form-select, textarea, input[type="text"], input[type="email"],
+input[type="password"], input[type="number"], input[type="url"], select {
+    background-color: #0d0e13;
+    border: 1px solid var(--ez-line);
+    border-radius: 2px;
+    color: var(--ez-cream);
+}
+
+.form-control:focus, .form-select:focus, textarea:focus, select:focus {
+    background-color: #0d0e13;
+    border-color: var(--ez-gold);
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.22);
+    color: var(--ez-cream);
+}
+
+.form-control::placeholder { color: rgba(247, 242, 231, 0.35); }
+.form-control:disabled, .form-control[readonly], .readonly, .vReadonly { background-color: #101117; color: rgba(247, 242, 231, 0.6); }
+.input-group-text { background-color: var(--ez-charcoal); border-color: var(--ez-line); color: var(--ez-gold); }
+label, .form-label, .required label, legend { color: rgba(247, 242, 231, 0.72); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.help, .helptext, .help-block, p.help, .text-muted { color: rgba(247, 242, 231, 0.45) !important; }
+.form-check-input:checked { background-color: var(--ez-gold); border-color: var(--ez-gold); }
+.form-check-input:focus { border-color: var(--ez-gold); box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25); }
+.errorlist, .errornote { color: #fca5a5; }
+
+/* select2 / autocomplete widgets */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+    background-color: #0d0e13;
+    border-color: var(--ez-line);
+    color: var(--ez-cream);
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered { color: var(--ez-cream); }
+.select2-dropdown { background-color: var(--ez-panel); border-color: var(--ez-line); }
+.select2-results__option { color: rgba(247, 242, 231, 0.85); }
+.select2-container--default .select2-results__option--highlighted[aria-selected] { background-color: var(--ez-gold); color: #08090c; }
+.select2-container--default .select2-selection--multiple .select2-selection__choice { background-color: var(--ez-charcoal); border-color: var(--ez-line); color: var(--ez-cream); }
+
+/* inline formsets + tabbed change forms */
+.inline-group, .tabbed-inline-group, .js-inline-admin-formset { border-color: var(--ez-line); }
+.tabular.inline-related thead th { background-color: #101117; }
+.add-row a, .related-widget-wrapper-link { color: var(--ez-gold); }
+#jazzy-tabs { border-bottom: 1px solid var(--ez-line); margin-bottom: 1.25rem; }
+#jazzy-tabs .nav-link {
+    background-color: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: rgba(247, 242, 231, 0.65);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+#jazzy-tabs .nav-link:hover { color: var(--ez-gold); }
+#jazzy-tabs .nav-link.active { background-color: rgba(212, 175, 55, 0.12); border-bottom-color: var(--ez-gold); color: var(--ez-gold); font-weight: 600; }
+
+/* ----------------------------------------------------------------- messages */
+.alert { border-radius: 2px; border-width: 1px; font-size: 0.85rem; }
+.alert-success, .messagelist .success { background-color: rgba(212, 175, 55, 0.12); border-color: var(--ez-line-strong); color: var(--ez-gold); }
+.alert-info, .messagelist .info { background-color: rgba(247, 242, 231, 0.06); border-color: rgba(247, 242, 231, 0.2); color: var(--ez-cream); }
+.alert-warning, .messagelist .warning { background-color: rgba(245, 158, 11, 0.14); border-color: rgba(245, 158, 11, 0.5); color: #fcd34d; }
+.alert-danger, .messagelist .error, .callout-danger { background-color: rgba(185, 28, 28, 0.16); border-color: rgba(185, 28, 28, 0.6); color: #fca5a5; }
+
+/* ---------------------------------------------------------------- pagination */
+.pagination { --bs-pagination-bg: var(--ez-panel); --bs-pagination-color: var(--ez-gold); --bs-pagination-border-color: var(--ez-line); }
+.pagination .page-link:hover { background-color: rgba(212, 175, 55, 0.14); color: var(--ez-gold); }
+.pagination .page-item.active .page-link { background-color: var(--ez-gold); border-color: var(--ez-gold); color: #08090c; font-weight: 600; }
+.paginator, .actions { background-color: var(--ez-charcoal); border-color: var(--ez-line); color: rgba(247, 242, 231, 0.7); }
+
+
+/* --------------------------------------------------------------------- login */
+body.login-page {
+    background:
+        radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.14), transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(212, 175, 55, 0.08), transparent 40%),
+        var(--ez-ink) !important;
+}
+
+.login-page .login-box { max-width: 26rem; }
+.login-page .login-logo a, .login-page .login-logo b { color: var(--ez-gold); }
+.login-page .login-logo a {
+    display: inline-block;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.55rem;
+    letter-spacing: 0.3em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.login-page .login-logo img { max-height: 68px; }
+.login-page .login-box-msg { color: rgba(247, 242, 231, 0.6); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; }
+.login-page .card { border-color: var(--ez-line-strong); box-shadow: 0 26px 60px rgba(0, 0, 0, 0.6); }
+.login-page .login-card-body { background-color: var(--ez-panel); }
+.login-page .btn { width: 100%; }
+
+/* -------------------------------------------------------------------- footer */
+.app-footer {
+    background-color: transparent;
+    border-top: 1px solid var(--ez-line);
+    color: rgba(247, 242, 231, 0.4);
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+}
+
+.app-footer a { color: var(--ez-gold); }
+
+/* --------------------------------------------------- changelists, filters, misc */
+#changelist-filter { background-color: var(--ez-panel); border: 1px solid var(--ez-line); }
+#changelist-filter h2, #changelist-filter h3 { color: var(--ez-gold); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; }
+#changelist-filter a { color: rgba(247, 242, 231, 0.8); }
+#changelist-filter li.selected a { color: var(--ez-gold); font-weight: 600; }
+#changelist-search input[type="text"] { background-color: #0d0e13; }
+#changelist-form .actions select, .actions select { background-color: #0d0e13; color: var(--ez-cream); }
+.selector-chosen h2, .selector-available h2 { background-color: var(--ez-charcoal) !important; color: var(--ez-gold) !important; }
+.selector select { background-color: #0d0e13; }
+
+.timeline > div > .timeline-item { background-color: var(--ez-panel); border-color: var(--ez-line); color: var(--ez-cream); }
+.timeline-header { background-color: var(--ez-charcoal) !important; border-color: var(--ez-line) !important; color: var(--ez-gold) !important; }
+.badge { border-radius: 2px; letter-spacing: 0.08em; }
+.modal-content { background-color: var(--ez-panel); border: 1px solid var(--ez-line); border-radius: 2px; }
+.modal-header, .modal-footer { border-color: var(--ez-line); }
+.deletelink, .remove-row a { color: #fca5a5; }
+.help-icon { color: var(--ez-gold); }
+

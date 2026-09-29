@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+tmp/
+
+# Environment and IDEs
+.env
+.secret_key
+.idea/
+.vscode/
+
+# Deployment artefacts
+dist/
+backups/
+deploy-*/
+*.zip
+
+# Test and tooling output
+test_run.log
+.pytest_cache/
+.coverage
+htmlcov/

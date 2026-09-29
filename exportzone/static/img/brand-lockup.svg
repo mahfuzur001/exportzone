@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 100" role="img" aria-label="EXPORT ZONE">
+  <g fill="none" stroke="#d4af37" stroke-width="2.5">
+    <circle cx="50" cy="50" r="30"/>
+    <path d="M50 32 68 50 50 68 32 50Z" stroke-linejoin="round"/>
+  </g>
+  <circle cx="50" cy="50" r="3.5" fill="#d4af37"/>
+  <text x="102" y="52" fill="#f7f2e7" font-family="Georgia, 'Times New Roman', serif" font-size="30" letter-spacing="7">EXPORT ZONE</text>
+  <text x="104" y="74" fill="#d4af37" font-family="Arial, Helvetica, sans-serif" font-size="10" letter-spacing="4.6">MEHERPUR &#183; BANGLADESH</text>
+</svg>

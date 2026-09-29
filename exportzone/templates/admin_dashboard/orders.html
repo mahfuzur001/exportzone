@@ -1,0 +1,46 @@
+{% extends "admin_dashboard/base.html" %}
+{% block heading %}Orders{% endblock %}
+{% block content %}
+<form class="admin-filters" method="get">
+  <input name="q" value="{{ query }}" placeholder="Search order, customer or phone">
+  <select name="status">
+    <option value="">All statuses</option>
+    {% for value,label in statuses %}
+      <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <input type="date" name="date_from" value="{{ date_from }}" aria-label="From date">
+  <input type="date" name="date_to" value="{{ date_to }}" aria-label="To date">
+  <select name="ordering">
+    <option value="-created_at" {% if ordering == '-created_at' %}selected{% endif %}>Newest</option>
+    <option value="created_at" {% if ordering == 'created_at' %}selected{% endif %}>Oldest</option>
+    <option value="-total_amount" {% if ordering == '-total_amount' %}selected{% endif %}>Highest value</option>
+  </select>
+  <button class="button button-gold" type="submit">Filter</button>
+</form>
+<section class="admin-panel">
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr><th>Order</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.order_number }}</td>
+          <td>{{ order.user.full_name }}<small>{{ order.user.email }}</small></td>
+          <td>{{ order.created_at|date:"M d, Y" }}</td>
+          <td>{{ order.items.count }}</td>
+          <td>৳{{ order.total_amount|floatformat:2 }}</td>
+          <td><span class="status-badge status-{{ order.status|lower }}">{{ order.get_status_display }}</span></td>
+          <td><a href="{% url 'admin_dashboard:order_detail' order.order_number %}">Open</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="admin-empty">No matching orders.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "admin_dashboard/pagination.html" %}
+</section>
+{% endblock %}

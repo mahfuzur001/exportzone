@@ -1,0 +1,66 @@
+# ===========================================================================
+# EXPORT ZONE - shared hosting (Apache + Passenger) hardening
+# ===========================================================================
+# Upload this file to the application root. cPanel's "Setup Django App" points
+# public_html at that root, so the Python sources, the SQLite database and the
+# secret key are technically inside the document root. These rules close that
+# hole.
+#
+# Only directives that shared hosts normally allow in .htaccess are used here
+# (FilesMatch/Require, RewriteRule, SetEnvIf) - a directive the host forbids
+# would make every page return "500 Internal Server Error".
+#
+# If you ever do hit a 500 after adding something, delete the optional block
+# marked "OPTIONAL" at the bottom of this file.
+# ===========================================================================
+
+# --- 1. Block dotfiles: .env, .secret_key, .git, .htpasswd, ... -------------
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# --- 2. Block database / cache / archive / editor leftovers ------------------
+<FilesMatch "\.(sqlite3?|db|log|ini|cfg|conf|sh|bash|bat|ps1|sql|bak|old|orig|swp|lock|zip|tar|gz|rar|7z|pyc|pyo)$">
+    Require all denied
+</FilesMatch>
+
+# --- 3. Block application source that must never be downloadable ------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Python package, configuration and template directories.
+    RewriteRule ^(?:config|apps|templates|tests|deploy|backups|\.git|\.venv|venv|node_modules|__pycache__)(?:/|$) - [F,L]
+
+    # Loose files that live in the application root.
+    RewriteRule ^(?:manage\.py|passenger_wsgi\.py|wsgi\.py|asgi\.py|pytest\.ini|db\.sqlite3|requirements(?:-dev|-prod)?\.txt|tailwind\.config\.js)$ - [F,L]
+
+    # Never hand out a directory listing of an uploaded folder.
+    RewriteRule ^(?:media|static|staticfiles)/(?:\.git|\.env) - [F,L]
+</IfModule>
+
+# --- 4. Let Django see the real scheme behind a proxy / Cloudflare ---------
+# Pairs with TRUST_X_FORWARDED_PROTO=True in .env. Without an SSL certificate
+# leave it off, otherwise HTTPS gets forced and the site appears to be down.
+<IfModule mod_setenvif.c>
+    SetEnvIf X-Forwarded-Proto https HTTPS=on
+</IfModule>
+
+# ===========================================================================
+# OPTIONAL - enable only after confirming the site still loads. Each block
+# needs an "AllowOverride" that your host may not grant; a missing grant
+# produces a 500 error, which is why caching and directory options are not
+# enabled by default.
+# ===========================================================================
+#
+# <IfModule mod_expires.c>
+#     ExpiresActive On
+#     ExpiresByType text/css                "access plus 7 days"
+#     ExpiresByType application/javascript  "access plus 7 days"
+#     ExpiresByType image/jpeg              "access plus 30 days"
+#     ExpiresByType image/png               "access plus 30 days"
+#     ExpiresByType image/svg+xml           "access plus 30 days"
+# </IfModule>
+#
+# <IfModule mod_autoindex.c>
+#     Options -Indexes
+# </IfModule>

@@ -1,0 +1,760 @@
+PHASE 4 — CART SYSTEM
+
+@workspace
+
+Read project_requirement.txt completely and inspect the current Export Zone Django project.
+
+IMPORTANT:
+Phase 1, Phase 2 and Phase 3 are already completed.
+
+Current verified state:
+- Phase 1: Foundation + premium dark/gold UI
+- Phase 2: Custom User + authentication + email verification + password reset
+- Phase 3: Category + Product + ProductImage + ProductVariant + Shop + filters + search + sorting + pagination + product detail
+- Phase 3 catalog tests: 25 tests PASS
+- Django system check: PASS
+
+Now implement ONLY PHASE 4 — CART SYSTEM.
+
+==================================================
+DO NOT BREAK EXISTING FEATURES
+==================================================
+
+Do NOT:
+- recreate the project
+- reset the database
+- delete migrations
+- delete existing apps
+- rewrite authentication
+- rewrite the product system
+- break the homepage
+- break shop/product detail
+- remove existing tests
+- create duplicate URL namespaces
+
+Before coding, inspect the existing:
+- accounts app
+- store app
+- core app
+- settings.py
+- config/urls.py
+- store models/views/urls
+- existing templates
+- existing tests
+
+Reuse the existing architecture.
+
+==================================================
+CART MODELS
+==================================================
+
+Create:
+
+apps/cart/
+
+Models:
+
+Cart
+- id
+- user (OneToOne or appropriate relationship)
+- created_at
+- updated_at
+
+CartItem
+- id
+- cart (ForeignKey)
+- product_variant (ForeignKey)
+- quantity
+- created_at
+- updated_at
+
+Important relationship:
+
+User
+  ↓ 1:1
+Cart
+  ↓ 1:N
+CartItem
+  ↓ N:1
+ProductVariant
+  ↓ N:1
+Product
+
+Do NOT store product price permanently in CartItem.
+
+The current ProductVariant/Product price must be used for cart calculations.
+
+Add appropriate constraints.
+
+A user should not have duplicate CartItems for the same ProductVariant.
+
+Use a UniqueConstraint:
+
+cart + product_variant
+
+Quantity must always be greater than 0.
+
+==================================================
+AUTHENTICATION
+==================================================
+
+Cart is LOGIN REQUIRED.
+
+Guest cart is NOT required in this phase.
+
+If an unauthenticated user clicks Add to Cart:
+
+redirect to login.
+
+After login, safely redirect back to the intended product page/cart where appropriate.
+
+Never use unsafe next redirects.
+
+==================================================
+ADD TO CART
+==================================================
+
+From Product Detail:
+
+User selects:
+
+- Size
+- Color
+- Quantity
+
+Then clicks:
+
+Add to Cart
+
+Backend must:
+
+1. Require authentication
+2. Validate product exists
+3. Validate product is active
+4. Validate selected variant belongs to that product
+5. Validate selected variant exists
+6. Validate quantity > 0
+7. Check stock
+8. Create Cart if necessary
+9. Create CartItem or increase existing quantity
+10. Never allow quantity above stock
+11. Show Django success/error message
+12. Redirect appropriately
+
+If item already exists:
+
+increase quantity instead of creating duplicate CartItem.
+
+Example:
+
+Current cart quantity = 2
+User adds quantity = 3
+
+New quantity = 5
+
+But if stock = 4:
+
+do NOT allow 5.
+
+Show a clear error message.
+
+==================================================
+CART PAGE
+==================================================
+
+Create:
+
+/cart/
+
+Template:
+
+templates/cart/cart.html
+
+Show:
+
+- Product image
+- Product name
+- Selected size
+- Selected color
+- SKU if useful
+- Unit price
+- Quantity
+- Item subtotal
+- Remove button
+- Update quantity controls
+
+Order summary:
+
+Subtotal
+Shipping
+Total
+
+For this phase:
+
+Shipping = ৳0
+
+Total = Subtotal
+
+Use BDT formatting.
+
+Example:
+
+৳2,499.00
+
+==================================================
+QUANTITY UPDATE
+==================================================
+
+User can:
+
++ increase
+- decrease
+
+Requirements:
+
+- quantity cannot be 0
+- minimum = 1
+- maximum = current stock
+
+If stock decreases after item was added:
+
+automatically prevent invalid quantity.
+
+Show a meaningful error.
+
+Do not trust client-side JavaScript.
+
+All stock validation must happen server-side.
+
+==================================================
+REMOVE ITEM
+==================================================
+
+Create:
+
+/cart/remove/<int:item_id>/
+
+Requirements:
+
+- POST only
+- CSRF required
+- user can remove only their own cart item
+- do not allow one user to remove another user's item
+- show success message
+- redirect back to cart
+
+Do NOT use GET for destructive remove actions.
+
+==================================================
+UPDATE ITEM
+==================================================
+
+Create:
+
+/cart/update/<int:item_id>/
+
+POST only.
+
+Validate:
+
+- item belongs to current user's cart
+- quantity is integer
+- quantity >= 1
+- quantity <= available stock
+
+Then update.
+
+Use proper messages.
+
+==================================================
+EMPTY CART
+==================================================
+
+If cart is empty:
+
+Show:
+
+Your Cart is Empty
+
+and:
+
+Continue Shopping
+
+button linking to:
+
+store:shop
+
+==================================================
+CART COUNT
+==================================================
+
+The navbar should display the number of items in the cart.
+
+Example:
+
+Cart (2)
+
+Use the total number of CartItems or total quantities consistently.
+
+Prefer:
+
+total quantity of all CartItems.
+
+Example:
+
+Jeans × 2
+Shirt × 1
+
+Cart count = 3
+
+Do not query the database repeatedly on every template manually.
+
+Use a context processor or another clean reusable approach.
+
+Avoid N+1 queries.
+
+==================================================
+PRODUCT DETAIL INTEGRATION
+==================================================
+
+Modify the existing product detail page.
+
+The Add to Cart form must:
+
+- select variant
+- select size
+- select color
+- select quantity
+- submit via POST
+- include CSRF
+
+Only show selectable variants that actually exist.
+
+Do not allow invalid product/variant combinations.
+
+Example:
+
+Product:
+Premium Stretch Jeans
+
+Variants:
+
+30 / Blue
+32 / Blue
+34 / Blue
+32 / Black
+
+If user selects:
+
+Size 30
+Color Black
+
+and that combination doesn't exist:
+
+do not submit an invalid variant.
+
+Use Alpine.js or vanilla JS if needed.
+
+Keep JavaScript lightweight.
+
+==================================================
+STOCK DISPLAY
+==================================================
+
+Show useful stock states:
+
+Available
+Low Stock
+Out of Stock
+
+Example:
+
+Stock: 12
+→ In Stock
+
+Stock: 3
+→ Only 3 left
+
+Stock: 0
+→ Out of Stock
+
+Add to Cart must be disabled when stock = 0.
+
+Again:
+
+JavaScript is only UI assistance.
+
+Backend must independently validate stock.
+
+==================================================
+CART CALCULATION
+==================================================
+
+Use Decimal for money.
+
+Do NOT use float.
+
+For each item:
+
+item_subtotal =
+product_variant.product.base_price × quantity
+
+Cart subtotal:
+
+sum(all item subtotals)
+
+Shipping:
+
+৳0
+
+Total:
+
+subtotal + shipping
+
+Keep calculation logic in a reusable model/property/service rather than duplicating calculation in multiple views/templates.
+
+==================================================
+DATABASE PERFORMANCE
+==================================================
+
+Cart queryset should use:
+
+select_related(
+    "user"
+)
+
+CartItem queryset should use appropriate:
+
+select_related(
+    "product_variant__product",
+    "product_variant__product__category"
+)
+
+and:
+
+prefetch_related(
+    "product_variant__product__images"
+)
+
+where appropriate.
+
+Avoid N+1 queries.
+
+Do not over-optimize unnecessarily.
+
+==================================================
+SECURITY
+==================================================
+
+All cart actions must:
+
+- require login
+- use POST for mutations
+- use CSRF
+- verify object ownership
+- validate server-side
+- prevent tampering with variant/product relationship
+- prevent negative quantity
+- prevent quantity above stock
+
+Do not use:
+
+csrf_exempt
+
+Do not trust:
+
+product_id
+price
+stock
+subtotal
+
+from the browser.
+
+The server is the source of truth.
+
+==================================================
+URLS
+==================================================
+
+Create:
+
+apps/cart/urls.py
+
+Use:
+
+app_name = "cart"
+
+Routes:
+
+/cart/
+/cart/add/
+/cart/update/<int:item_id>/
+/cart/remove/<int:item_id>/
+
+Names:
+
+cart:detail
+cart:add
+cart:update
+cart:remove
+
+Update config/urls.py carefully.
+
+Do not create duplicate namespaces.
+
+==================================================
+UI DESIGN
+==================================================
+
+Follow the existing Export Zone design.
+
+Theme:
+
+Dark premium
+Gold accent
+Responsive
+Luxury clothing store
+
+Use:
+
+#0B0B0B
+#111827
+#D4AF37
+#F59E0B
+
+Cart page should resemble the supplied reference:
+
+- dark background
+- gold headings
+- product cards
+- quantity +/- control
+- remove icon
+- order summary
+- large gold checkout button
+
+IMPORTANT:
+
+The button should say:
+
+"Proceed to Checkout"
+
+BUT checkout functionality does not exist yet.
+
+For Phase 4:
+
+Clicking it can either:
+- redirect to a placeholder checkout route only if cleanly implemented
+
+OR preferably:
+
+disable/show:
+
+"Checkout — Coming in Phase 5"
+
+Do NOT implement Order in Phase 4.
+
+==================================================
+RESPONSIVE
+==================================================
+
+Desktop:
+
+2-column layout:
+
+Cart Items | Order Summary
+
+Mobile:
+
+single column.
+
+Quantity controls must work comfortably on small screens.
+
+Do not break the existing navbar.
+
+==================================================
+TESTS
+==================================================
+
+Create comprehensive tests.
+
+Minimum:
+
+MODEL TESTS
+
+1. Cart creation
+2. One cart per user
+3. CartItem creation
+4. Duplicate cart item prevented
+5. Quantity validation
+
+ADD TO CART
+
+6. Anonymous user redirected to login
+7. Authenticated user can add product variant
+8. Existing item quantity increases
+9. Invalid variant rejected
+10. Variant belonging to another product rejected
+11. Inactive product rejected
+12. Out-of-stock variant rejected
+13. Quantity above stock rejected
+
+CART PAGE
+
+14. Cart page returns 200
+15. Correct cart items displayed
+16. Correct subtotal
+17. Shipping = 0
+18. Correct total
+19. Empty cart handled
+
+UPDATE
+
+20. Quantity can be increased
+21. Quantity can be decreased
+22. Quantity cannot exceed stock
+23. Invalid quantity rejected
+
+REMOVE
+
+24. Item can be removed
+25. User cannot remove another user's item
+26. Remove requires POST
+
+SECURITY
+
+27. CSRF protection
+28. Authentication required for mutations
+
+INTEGRATION
+
+29. Existing Phase 1 tests pass
+30. Existing Phase 2 tests pass
+31. Existing Phase 3 tests pass
+
+Add more tests if needed.
+
+==================================================
+MIGRATIONS
+==================================================
+
+Run:
+
+python manage.py makemigrations cart
+
+python manage.py migrate
+
+Then:
+
+python manage.py makemigrations --check --dry-run
+
+There must be no migration drift.
+
+Never delete migrations to solve errors.
+
+==================================================
+VALIDATION
+==================================================
+
+Before completion run:
+
+python manage.py check
+
+python manage.py makemigrations --check --dry-run
+
+python manage.py migrate
+
+python manage.py test
+
+Also run:
+
+python manage.py test apps.cart.tests -v 1
+
+All tests must pass.
+
+==================================================
+ERROR HANDLING
+==================================================
+
+If any error appears:
+
+1. Stop
+2. Read the actual traceback
+3. Find the root cause
+4. Fix the root cause
+5. Re-run the failing test
+6. Run the complete test suite again
+
+Do NOT:
+
+- suppress errors
+- comment out failing tests
+- delete tests
+- skip tests
+- disable Django checks
+- reset the database unnecessarily
+- claim success without verification
+
+==================================================
+FINAL SUCCESS CRITERIA
+==================================================
+
+Phase 4 is complete only when:
+
+✓ Cart model works
+✓ CartItem works
+✓ Add to Cart works
+✓ Variant validation works
+✓ Stock validation works
+✓ Quantity update works
+✓ Remove works
+✓ Cart totals are correct
+✓ Empty cart works
+✓ Cart count works
+✓ Authentication protection works
+✓ CSRF protection works
+✓ Responsive UI works
+✓ Admin can inspect carts if useful
+✓ Phase 1 preserved
+✓ Phase 2 preserved
+✓ Phase 3 preserved
+✓ Django check passes
+✓ Migration check passes
+✓ Full test suite passes
+
+DO NOT IMPLEMENT ORDER OR CHECKOUT.
+
+==================================================
+FINAL REPORT
+==================================================
+
+At the end report:
+
+### Phase 4 Completed
+
+1. Files created
+2. Files modified
+3. Models
+4. Relationships
+5. URLs
+6. Cart functionality
+7. Stock validation
+8. Security
+9. UI
+10. Tests executed
+11. Cart test result
+12. Full test result
+13. Migration result
+14. Django check result
+15. Any warnings
+16. Remaining TODOs
+
+Most important:
+
+"Phase 1, Phase 2 and Phase 3 functionality were preserved."
+
+Do not claim completion unless the actual commands were executed successfully.
+
+START NOW.
+
+First inspect the existing project.
+Then implement ONLY Phase 4.

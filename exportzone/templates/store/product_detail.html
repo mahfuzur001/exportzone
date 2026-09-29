@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% load seo_tags %}
+{% block seo_head %}
+    {# Title, description, canonical and JSON-LD are all built from the product row in
+       apps.store.views.product_detail, so they stay in step with the visible page. #}
+    {% seo_meta %}
+{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-7xl px-4 py-10 lg:px-6">
+    <nav class="mb-6 text-[0.6rem] uppercase tracking-[0.3em] text-cream/45" aria-label="Breadcrumb">
+        <a href="{% url 'store:home' %}" class="transition hover:text-gold">Home</a> &nbsp;/&nbsp;
+        <a href="{% url 'store:shop' %}" class="transition hover:text-gold">Shop</a> &nbsp;/&nbsp;
+        <a href="{% url 'store:shop' %}?category={{ product.category.slug }}" class="transition hover:text-gold">{{ product.category.name }}</a> &nbsp;/&nbsp;
+        <span class="text-gold">{{ product.name }}</span>
+    </nav>
+
+    <div class="grid gap-10 lg:grid-cols-2">
+        <div>
+            <div class="relative aspect-[4/5] overflow-hidden border border-white/10 bg-gradient-to-br from-white/[0.07] via-ink to-gold/10">
+                {% if product.primary_image %}
+                <img id="main-image" src="{{ product.primary_image.image.url }}" alt="{{ product.name }}" class="h-full w-full object-cover">
+                {% else %}
+                <span id="main-image-placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
+                    <span class="font-heading text-2xl uppercase tracking-[0.35em] text-cream/70">Export <span class="text-gold">Zone</span></span>
+                    <span class="text-[0.55rem] uppercase tracking-[0.4em] text-cream/40">{{ product.category.name }} &middot; premium piece</span>
+                </span>
+                <img id="main-image" src="" alt="" class="hidden h-full w-full object-cover">
+                {% endif %}
+                {% if product.featured %}
+                <span class="absolute left-4 top-4 border border-gold/60 bg-ink/85 px-3 py-1 text-[0.5rem] font-bold uppercase tracking-[0.25em] text-gold">Featured</span>
+                {% endif %}
+            </div>
+            {% if product.images.all %}
+            <div class="mt-3 flex gap-3 overflow-x-auto pb-1">
+                {% for image in product.images.all %}
+                <button type="button" class="gallery-thumb h-20 w-16 shrink-0 overflow-hidden border {% if forloop.first %}border-gold{% else %}border-white/15{% endif %}" data-src="{{ image.image.url }}" aria-label="View image {{ forloop.counter }}">
+                    <img src="{{ image.image.url }}" alt="" class="h-full w-full object-cover">
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <p class="text-[0.55rem] uppercase tracking-[0.4em] text-gold/80">{{ product.category.name }}</p>
+            <h1 class="mt-3 font-heading text-3xl leading-tight text-cream md:text-4xl">{{ product.name }}</h1>
+            <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-cream/50">
+                <span class="tracking-[0.15em] text-gold/70" aria-hidden="true">&#9733; &#9733; &#9733; &#9733; &#9733;</span>
+                <span>No reviews yet &middot; be the first to review</span>
+            </div>
+            <p class="mt-5 font-heading text-3xl text-gold">৳{{ product.base_price|floatformat:2 }}</p>
+            <p class="mt-1 text-[0.62rem] uppercase tracking-[0.2em] text-cream/45">Free nationwide shipping &middot; cash on delivery</p>
+            <p class="mt-5 border-t border-white/10 pt-5 text-sm leading-relaxed text-cream/65">{{ product.description|truncatewords:40 }}</p>
+            <form method="post" action="{% url 'cart:add' %}" id="variant-form" class="mt-7">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.pk }}">
+                <input type="hidden" name="quantity" id="quantity-input" value="1">
+
+                {% if available_sizes %}
+                <p class="field-label mb-2">Size</p>
+                <div class="flex flex-wrap gap-2" role="group" aria-label="Select size">
+                    {% for size in available_sizes %}
+                    <button type="button" class="variant-btn px-4 py-2.5 text-xs uppercase tracking-[0.18em]" data-size="{{ size }}">{{ size }}</button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if color_options %}
+                <p class="field-label mb-2 mt-5">Colour</p>
+                <div class="flex flex-wrap gap-2" role="group" aria-label="Select colour">
+                    {% for option in color_options %}
+                    <button type="button" class="variant-btn flex items-center gap-2 px-4 py-2.5 text-xs uppercase tracking-[0.18em]" data-color="{{ option.0 }}"><span class="swatch {{ option.0|lower }}" aria-hidden="true"></span>{{ option.1 }}</button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if variants %}
+                <div class="mt-5">
+                    <label class="field-label mb-2 block" for="variant-select">Choose your option</label>
+                    <select id="variant-select" name="variant_id" class="w-full border border-white/15 bg-ink/70 px-3 py-3 text-sm text-cream focus:border-gold focus:outline-none">
+                        <option value="" data-size="" data-color="" data-stock="0" disabled selected>Make a selection</option>
+                        {% for variant in variants %}
+                        <option value="{{ variant.pk }}" data-size="{{ variant.size }}" data-color="{{ variant.color }}" data-stock="{{ variant.stock }}"{% if variant.stock == 0 %} disabled{% endif %}>{{ variant.size }} / {{ variant.color }} / {{ variant.sku }} &mdash; {{ variant.stock }} in stock</option>
+                        {% endfor %}
+                    </select>
+                    <p id="stock-note" class="stock-meta" aria-live="polite">Select size and colour to see live availability.</p>
+                </div>
+                {% else %}
+                <p class="stock-meta">This piece is out of stock right now &mdash; check back soon.</p>
+                {% endif %}
+
+                <div class="detail-actions mt-6">
+                    <div class="flex items-center border border-white/15">
+                        <button type="button" id="qty-minus" class="px-4 py-3 text-cream/70 transition hover:text-gold" aria-label="Decrease quantity">&minus;</button>
+                        <span id="qty-display" class="w-10 text-center text-sm font-semibold text-cream">1</span>
+                        <button type="button" id="qty-plus" class="px-4 py-3 text-cream/70 transition hover:text-gold" aria-label="Increase quantity">+</button>
+                    </div>
+                    <button type="submit" id="add-to-cart" class="button button-gold flex-1" {% if not variants %}disabled{% endif %} aria-describedby="stock-note">Add to cart</button>
+                    <button type="submit" name="next" value="{% url 'orders:checkout' %}" id="buy-now" class="button button-outline" {% if not variants %}disabled{% endif %}>Buy now</button>
+                </div>
+            </form>
+
+            <ul class="mt-6 grid gap-2 border-t border-white/10 pt-5 text-[0.62rem] uppercase tracking-[0.18em] text-cream/50">
+                <li class="flex items-center gap-2"><span class="text-gold" aria-hidden="true">&#10003;</span> Free shipping across Bangladesh</li>
+                <li class="flex items-center gap-2"><span class="text-gold" aria-hidden="true">&#10003;</span> Cash on delivery available</li>
+                <li class="flex items-center gap-2"><span class="text-gold" aria-hidden="true">&#10003;</span> Quality checked before dispatch</li>
+            </ul>
+        </div>
+    </div>
+    <section class="mt-14 border-t border-white/10 pt-10">
+        <div class="grid gap-8 lg:grid-cols-2">
+            <div>
+                <p class="text-[0.55rem] uppercase tracking-[0.4em] text-gold/80">The details</p>
+                <h2 class="mt-2 font-heading text-2xl text-cream">Product description</h2>
+                <div class="mt-4 space-y-4 text-sm leading-relaxed text-cream/65">
+                    <p>{{ product.description }}</p>
+                    <div class="border border-white/10 bg-white/[0.03] p-4">
+                        <h3 class="text-[0.6rem] font-bold uppercase tracking-[0.3em] text-gold">Size guide</h3>
+                        <p class="mt-2 text-cream/55">Sizes follow standard Bangladesh measurements. Pick your usual denim size; if you are between sizes, size up for a relaxed fit.</p>
+                    </div>
+                    <div class="border border-white/10 bg-white/[0.03] p-4">
+                        <h3 class="text-[0.6rem] font-bold uppercase tracking-[0.3em] text-gold">Fabric &amp; care</h3>
+                        <p class="mt-2 text-cream/55">Machine wash cold with like colours. Do not bleach. Tumble dry low and warm iron if needed.</p>
+                    </div>
+                    <div class="border border-white/10 bg-white/[0.03] p-4">
+                        <h3 class="text-[0.6rem] font-bold uppercase tracking-[0.3em] text-gold">Reviews</h3>
+                        <p class="mt-2 text-cream/55">No reviews yet. Purchased this piece? Your review will help other members of the house.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-[0.55rem] uppercase tracking-[0.4em] text-gold/80">Complete the look</p>
+                <h2 class="mt-2 font-heading text-2xl text-cream">Related products</h2>
+                <div class="mt-5 grid grid-cols-2 gap-4">
+                    {% for related in related_products %}
+                    {% include "store/components/product_card.html" with product=related %}
+                    {% empty %}
+                    <p class="col-span-full border border-dashed border-white/15 px-4 py-8 text-center text-sm text-cream/55">More pieces from this category are on the way.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        var select = document.getElementById('variant-select');
+        var addBtn = document.getElementById('add-to-cart');
+        var buyBtn = document.getElementById('buy-now');
+        var note = document.getElementById('stock-note');
+        var sizeState = null;
+        var colorState = null;
+
+        function selectedOption() {
+            return select && select.selectedIndex > 0 ? select.options[select.selectedIndex] : null;
+        }
+
+        function reflectButtons() {
+            document.querySelectorAll('.variant-btn[data-size]').forEach(function (btn) {
+                btn.classList.toggle('is-active', btn.getAttribute('data-size') === sizeState);
+            });
+            document.querySelectorAll('.variant-btn[data-color]').forEach(function (btn) {
+                btn.classList.toggle('is-active', btn.getAttribute('data-color') === colorState);
+            });
+        }
+
+        function syncVariant() {
+            var option = selectedOption();
+            var stock = option ? parseInt(option.getAttribute('data-stock'), 10) || 0 : 0;
+            var ready = !!(option && stock > 0);
+            if (addBtn) addBtn.disabled = !ready;
+            if (buyBtn) buyBtn.disabled = !ready;
+            if (note) {
+                note.textContent = option
+                    ? (ready ? 'In stock: ' + stock + ' available.' : 'Out of stock.')
+                    : 'Select size and colour to see availability.';
+            }
+            if (option) {
+                sizeState = option.getAttribute('data-size');
+                colorState = option.getAttribute('data-color');
+            }
+            reflectButtons();
+        }
+
+        function matchOption() {
+            if (!select) { reflectButtons(); return; }
+            for (var i = 1; i < select.options.length; i++) {
+                var option = select.options[i];
+                var sizeOk = !sizeState || option.getAttribute('data-size') === sizeState;
+                var colorOk = !colorState || option.getAttribute('data-color') === colorState;
+                if (sizeOk && colorOk && !option.disabled) {
+                    select.selectedIndex = i;
+                    syncVariant();
+                    return;
+                }
+            }
+            select.selectedIndex = 0;
+            syncVariant();
+            if (note) {
+                note.textContent = (sizeState && colorState)
+                    ? 'The ' + sizeState + ' / ' + colorState + ' combination is unavailable.'
+                    : 'Select size and colour to see availability.';
+            }
+        }
+
+        document.querySelectorAll('.variant-btn[data-size]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var value = btn.getAttribute('data-size');
+                sizeState = sizeState === value ? null : value;
+                matchOption();
+            });
+        });
+        document.querySelectorAll('.variant-btn[data-color]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var value = btn.getAttribute('data-color');
+                colorState = colorState === value ? null : value;
+                matchOption();
+            });
+        });
+        if (select) { select.addEventListener('change', syncVariant); }
+        var qtyInput = document.getElementById('quantity-input');
+        var qtyDisplay = document.getElementById('qty-display');
+        var minus = document.getElementById('qty-minus');
+        var plus = document.getElementById('qty-plus');
+
+        function currentQty() {
+            return parseInt(qtyInput ? qtyInput.value : '1', 10) || 1;
+        }
+
+        function setQty(value) {
+            value = Math.max(1, Math.min(value, 99));
+            if (qtyInput) { qtyInput.value = value; }
+            if (qtyDisplay) { qtyDisplay.textContent = value; }
+        }
+
+        if (minus) { minus.addEventListener('click', function () { setQty(currentQty() - 1); }); }
+        if (plus) { plus.addEventListener('click', function () { setQty(currentQty() + 1); }); }
+
+        var mainImage = document.getElementById('main-image');
+        var placeholder = document.getElementById('main-image-placeholder');
+        document.querySelectorAll('.gallery-thumb').forEach(function (thumb) {
+            thumb.addEventListener('click', function () {
+                var src = thumb.getAttribute('data-src');
+                if (mainImage && src) {
+                    mainImage.src = src;
+                    mainImage.classList.remove('hidden');
+                    if (placeholder) { placeholder.classList.add('hidden'); }
+                }
+                document.querySelectorAll('.gallery-thumb').forEach(function (item) {
+                    item.classList.remove('border-gold');
+                    item.classList.add('border-white/15');
+                });
+                thumb.classList.remove('border-white/15');
+                thumb.classList.add('border-gold');
+            });
+        });
+        var form = document.getElementById('variant-form');
+        if (form) {
+            form.addEventListener('submit', function (event) {
+                if (!select || !select.value) {
+                    event.preventDefault();
+                    if (note) { note.textContent = 'Please choose a size and colour first.'; }
+                    if (select) { select.focus(); }
+                }
+            });
+        }
+    })();
+</script>
+{% endblock %}

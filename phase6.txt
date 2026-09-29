@@ -1,0 +1,771 @@
+PHASE 6 — ADMIN DASHBOARD & STORE MANAGEMENT
+
+You are continuing the existing "Export Zone" Django e-commerce project.
+
+IMPORTANT:
+- Do NOT rebuild the project.
+- Do NOT modify or remove working Phase 1–5 functionality.
+- Preserve all existing authentication, catalog, cart, checkout, COD, order and email functionality.
+- First inspect the existing project structure and implementation before making changes.
+- Reuse existing models, services, forms, URLs and utilities whenever possible.
+- Follow the existing dark/gold premium Export Zone design system.
+- Use Django Templates + Tailwind CSS + Alpine.js/vanilla JS only.
+- No React/Vue.
+- No REST API.
+- Use get_user_model() wherever user model access is required.
+
+============================================================
+CURRENT PROJECT STATUS
+============================================================
+
+Phase 1:
+- Django 5.2 foundation
+- SQLite development database
+- PostgreSQL-ready configuration
+- Dark/gold premium landing page
+- Tailwind CSS
+- Responsive base layout
+
+Phase 2:
+- Custom User model
+- Email + phone authentication
+- Registration
+- Email verification
+- Login/logout
+- Remember Me
+- Password reset
+- Account page
+- Authentication tests
+
+Phase 3:
+- Category
+- Product
+- ProductVariant
+- ProductImage
+- Product listing
+- Product detail
+- Category/size/color/price filters
+- Pagination
+- Sorting
+- Product admin
+
+Phase 4:
+- Cart
+- Add/update/remove/clear
+- Variant validation
+- Stock validation
+- Quantity validation
+- Cart navbar count
+- CSRF protection
+- Ownership protection
+
+Phase 5:
+- Checkout
+- Delivery information
+- Bangladesh phone validation
+- COD only
+- bKash/Nagad disabled with "Coming Soon"
+- Atomic order creation
+- Stock locking
+- Stock reduction
+- Cart clearing
+- Order number: EZ-YYYYMMDD-XXXX
+- Order confirmation
+- Order history
+- Order details
+- Order tracking
+- Order cancellation
+- Confirmation email
+- Admin order management
+- 76 existing tests passing
+
+DO NOT BREAK ANY OF THESE.
+
+============================================================
+PHASE 6 GOAL
+============================================================
+
+Build a professional custom Admin Dashboard for Export Zone.
+
+The admin dashboard should allow administrators to manage:
+
+1. Dashboard overview
+2. Products
+3. Product variants
+4. Product images
+5. Categories
+6. Orders
+7. Order status
+8. Customers/users
+9. Basic sales statistics
+
+The existing Django Admin may remain available for emergency/internal use, but the primary experience should be a custom premium Admin Dashboard.
+
+============================================================
+ADMIN ACCESS CONTROL
+============================================================
+
+Only users with appropriate admin privileges can access the custom dashboard.
+
+Use Django's existing authentication/authorization system.
+
+Requirements:
+
+- Unauthenticated user → redirect to login
+- Normal customer → HTTP 403 or safe redirect
+- Admin/staff → dashboard access
+- Never expose admin management URLs to normal customers
+- Every admin POST action must use CSRF protection
+- Never trust IDs from URL/query parameters without permission checks
+
+Do NOT create a second authentication system.
+
+============================================================
+ADMIN DASHBOARD
+============================================================
+
+Create:
+
+/admin-dashboard/
+
+Dashboard should contain attractive summary cards:
+
+- Total Orders
+- Pending Orders
+- Processing Orders
+- Shipped Orders
+- Delivered Orders
+- Cancelled Orders
+- Total Products
+- Low Stock Products
+- Total Customers
+- Total Revenue
+
+Use efficient database queries.
+
+Avoid N+1 queries.
+
+Use:
+
+- select_related()
+- prefetch_related()
+- aggregation
+- Count()
+- Sum()
+- Q()
+
+where appropriate.
+
+Revenue should be calculated from valid/completed orders according to the existing Order status implementation.
+
+Do not include cancelled orders in revenue unless the existing business logic explicitly requires otherwise.
+
+============================================================
+RECENT ORDERS
+============================================================
+
+Dashboard should display recent orders.
+
+Columns:
+
+- Order Number
+- Customer
+- Date
+- Items
+- Total
+- Status
+- Action
+
+Status should have visually distinct badges:
+
+Pending
+Confirmed
+Processing
+Shipped
+Delivered
+Cancelled
+
+Clicking an order should open the admin order detail page.
+
+============================================================
+ORDER MANAGEMENT
+============================================================
+
+Create:
+
+/admin-dashboard/orders/
+
+/admin-dashboard/orders/<order_number>/
+
+Admin should be able to:
+
+- View orders
+- Search by order number
+- Search by customer email/phone/name
+- Filter by status
+- Filter by date
+- Sort by newest/oldest
+- View complete order details
+- View customer information
+- View delivery information
+- View ordered products
+- View size/color
+- View quantity
+- View unit price
+- View subtotal
+- View total
+- View payment method
+- View order status
+
+Admin should be able to change:
+
+Pending
+→ Confirmed
+→ Processing
+→ Shipped
+→ Delivered
+
+And:
+
+Pending/Confirmed/Processing/Shipped
+→ Cancelled
+
+Do not allow invalid status transitions unless explicitly handled.
+
+Use POST for status-changing actions.
+
+Use CSRF.
+
+============================================================
+ORDER STATUS HISTORY
+============================================================
+
+If the existing project does not already have status history, create a clean OrderStatusHistory model.
+
+Example:
+
+OrderStatusHistory:
+- order
+- status
+- changed_by
+- note
+- created_at
+
+Every admin status change should create a history record.
+
+Display a timeline on the admin order detail page:
+
+Pending
+↓
+Confirmed
+↓
+Processing
+↓
+Shipped
+↓
+Delivered
+
+If cancelled:
+
+Cancelled
+
+Include:
+
+- status
+- changed by
+- date/time
+- optional note
+
+Do not duplicate existing status-history functionality if it already exists.
+
+============================================================
+PRODUCT MANAGEMENT
+============================================================
+
+Create:
+
+/admin-dashboard/products/
+
+/admin-dashboard/products/add/
+
+/admin-dashboard/products/<id>/edit/
+
+/admin-dashboard/products/<id>/delete/
+
+Admin can:
+
+- Create product
+- Edit product
+- Activate/deactivate product
+- Delete product safely
+- Update name
+- Description
+- Category
+- Base price
+- Active status
+
+Use Django ModelForms.
+
+Validate:
+
+- price >= 0
+- name required
+- category required
+- slug uniqueness
+- sensible description length
+
+Do not permanently delete products that are referenced by historical orders unless the existing database design explicitly supports safe deletion.
+
+Prefer soft-delete/deactivation where appropriate.
+
+============================================================
+VARIANT MANAGEMENT
+============================================================
+
+Admin must be able to manage:
+
+- Size
+- Color
+- SKU
+- Stock
+- Active/inactive state if supported
+
+Show variants inside product management.
+
+Example:
+
+Product:
+Classic Denim Jeans
+
+Variants:
+
+Size | Color | SKU | Stock
+--------------------------------
+30   | Blue  | EZ-JN-30-BL | 12
+32   | Blue  | EZ-JN-32-BL | 5
+34   | Black | EZ-JN-34-BK | 0
+
+Admin should clearly see:
+
+- In stock
+- Low stock
+- Out of stock
+
+Create a configurable low-stock threshold if appropriate.
+
+Do not hardcode business logic unnecessarily.
+
+============================================================
+PRODUCT IMAGE MANAGEMENT
+============================================================
+
+Admin should be able to:
+
+- Upload product images
+- Delete images
+- Set primary image if the existing model supports it
+- Preview uploaded images
+
+Use Pillow/ImageField safely.
+
+Validate image uploads.
+
+Do not allow unsafe file types.
+
+Keep media configuration compatible with production.
+
+============================================================
+CATEGORY MANAGEMENT
+============================================================
+
+Create:
+
+/admin-dashboard/categories/
+
+Admin can:
+
+- Add category
+- Edit category
+- Activate/deactivate category
+- Delete category only when safe
+
+Display:
+
+- Category name
+- Product count
+- Active status
+
+Use annotation instead of querying product count separately for every category.
+
+============================================================
+CUSTOMER MANAGEMENT
+============================================================
+
+Create:
+
+/admin-dashboard/customers/
+
+/admin-dashboard/customers/<id>/
+
+Admin can view:
+
+- Full name
+- Email
+- Phone
+- Account status
+- Date joined
+- Number of orders
+- Total order value
+
+Admin should NOT see or expose passwords.
+
+Admin may activate/deactivate users where appropriate.
+
+Do not allow an admin to accidentally remove their own administrative access.
+
+Use get_user_model().
+
+Use select_related/prefetch_related/annotations.
+
+============================================================
+LOW STOCK PAGE
+============================================================
+
+Create:
+
+/admin-dashboard/low-stock/
+
+Display products/variants where:
+
+stock <= configured low-stock threshold
+
+Columns:
+
+- Product
+- Variant
+- SKU
+- Size
+- Color
+- Current Stock
+- Status
+
+Highlight out-of-stock variants.
+
+============================================================
+SEARCH / FILTER UX
+============================================================
+
+Admin tables should support:
+
+- Search
+- Status filter
+- Category filter
+- Date filter where relevant
+- Pagination
+
+Use server-side filtering.
+
+Do not load thousands of records into the browser.
+
+Preserve query parameters while navigating pagination.
+
+============================================================
+ADMIN DESIGN
+============================================================
+
+Create a premium dashboard matching Export Zone.
+
+Theme:
+
+Background:
+#0B0B0B / #111827
+
+Accent:
+#D4AF37 / #F59E0B
+
+Style:
+
+- Premium fashion brand
+- Clean
+- Minimal
+- Modern
+- Professional
+- Responsive
+- Mobile-first
+
+Sidebar:
+
+Export Zone logo/name
+
+Dashboard
+Orders
+Products
+Categories
+Customers
+Low Stock
+Settings/Profile
+
+Top navigation:
+
+- Admin name
+- Notifications if implemented
+- View Store
+- Logout
+
+Cards should have:
+
+- subtle borders
+- rounded corners
+- clean spacing
+- premium typography
+- responsive layout
+
+Do NOT overuse animations.
+
+============================================================
+MOBILE RESPONSIVENESS
+============================================================
+
+Admin dashboard must work on:
+
+- Mobile
+- Tablet
+- Laptop
+- Desktop
+
+On mobile:
+
+- Sidebar becomes drawer/menu
+- Tables become horizontally scrollable or responsive cards
+- Dashboard cards stack
+- Buttons remain usable
+- Forms remain readable
+
+Test mentally at approximately:
+
+320px
+375px
+768px
+1024px
+1440px
+
+============================================================
+EMAIL INTEGRATION
+============================================================
+
+When an admin changes an order status:
+
+Consider sending a status-update email to the customer.
+
+If implemented:
+
+- Pending → Confirmed email
+- Confirmed → Processing email
+- Processing → Shipped email
+- Shipped → Delivered email
+- Cancelled email
+
+Email failures must NEVER break the admin status update.
+
+Use:
+
+try:
+    send_email(...)
+except Exception:
+    log exception
+
+Prefer transaction.on_commit() where appropriate.
+
+Do not send emails before the database transaction succeeds.
+
+============================================================
+SECURITY
+============================================================
+
+Must implement:
+
+- CSRF protection
+- Admin authorization
+- POST-only mutations
+- Permission checks
+- Safe redirects
+- Object ownership/permission validation
+- No password exposure
+- No raw SQL
+- No hardcoded secrets
+- No unsafe template rendering
+- Escape user-generated content
+- Validate uploaded images
+- Prevent accidental self-lockout of admin account
+
+Never rely only on hiding buttons in templates.
+
+Authorization must also exist server-side.
+
+============================================================
+PERFORMANCE
+============================================================
+
+Avoid N+1 queries.
+
+Use:
+
+select_related()
+prefetch_related()
+annotate()
+Count()
+Sum()
+Exists()
+Q()
+
+where appropriate.
+
+Do not optimize prematurely.
+
+Only introduce indexes when justified by actual query patterns.
+
+============================================================
+TESTING
+============================================================
+
+Create comprehensive Phase 6 tests.
+
+Minimum tests:
+
+1. Admin can access dashboard
+2. Anonymous user cannot access dashboard
+3. Normal customer cannot access dashboard
+4. Dashboard statistics are correct
+5. Admin can view orders
+6. Admin can search orders
+7. Admin can filter orders
+8. Admin can view order details
+9. Admin can update valid order status
+10. Invalid status transitions are rejected
+11. Status history is created
+12. Customer receives status email when configured
+13. Email failure does not break status update
+14. Admin can create product
+15. Admin can edit product
+16. Admin can activate/deactivate product
+17. Admin can manage variants
+18. Admin can manage categories
+19. Admin can view customers
+20. Customer password is never exposed
+21. Low-stock filtering works
+22. CSRF protection works
+23. Unauthorized POST requests are rejected
+24. Pagination works
+
+Also ensure all previous tests continue passing.
+
+============================================================
+DATABASE
+============================================================
+
+If new models are needed:
+
+- Create proper migrations
+- Use ForeignKey relationships correctly
+- Use appropriate on_delete behavior
+- Add useful indexes/constraints where justified
+- Preserve existing order history
+
+Do not modify existing historical OrderItem snapshot data in a way that can corrupt old orders.
+
+============================================================
+URLS
+============================================================
+
+Use a dedicated namespace:
+
+app_name = "admin_dashboard"
+
+Example:
+
+/admin-dashboard/
+/admin-dashboard/orders/
+/admin-dashboard/orders/<order_number>/
+/admin-dashboard/products/
+/admin-dashboard/products/add/
+/admin-dashboard/products/<id>/edit/
+/admin-dashboard/products/<id>/delete/
+/admin-dashboard/categories/
+/admin-dashboard/customers/
+/admin-dashboard/customers/<id>/
+/admin-dashboard/low-stock/
+
+Use named URLs everywhere.
+
+Never hardcode URLs in templates.
+
+============================================================
+IMPORTANT IMPLEMENTATION RULE
+============================================================
+
+Before coding:
+
+1. Inspect the existing project.
+2. Inspect all current models.
+3. Inspect Order and OrderItem implementation.
+4. Inspect authentication/permissions.
+5. Inspect current admin configuration.
+6. Inspect existing templates/base layout.
+7. Inspect existing URL namespaces.
+8. Reuse existing services/utilities.
+
+Then implement Phase 6 incrementally.
+
+Do not rewrite working code unnecessarily.
+
+============================================================
+VALIDATION REQUIREMENTS
+============================================================
+
+After implementation run:
+
+python manage.py check
+
+python manage.py makemigrations --check --dry-run
+
+python manage.py migrate
+
+python manage.py test
+
+Also run the Phase 6 focused tests.
+
+Do not claim completion unless the commands actually pass.
+
+If a test fails:
+
+1. Identify root cause.
+2. Fix it.
+3. Re-run the failed test.
+4. Re-run the full regression suite.
+
+============================================================
+FINAL REPORT
+============================================================
+
+When finished, report:
+
+PHASE 6 COMPLETE
+
+Include:
+
+- Files created
+- Files modified
+- Features implemented
+- New models
+- New URLs
+- Security measures
+- Tests executed
+- Exact test count
+- Django check result
+- Migration result
+- Any remaining TODOs
+
+IMPORTANT:
+Do not start Phase 7 automatically.
+
+Stop after Phase 6 is fully implemented and verified.

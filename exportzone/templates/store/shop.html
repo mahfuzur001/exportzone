@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{# The view (build_shop_seo) already supplies the right title for the clean listing,
+   for a category page, and for filtered/paginated views. Declaring a static title here
+   would override all three with one string. #}
+{% block seo_head %}{% seo_meta %}{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-7xl px-4 py-10 lg:px-6">
+    <nav class="mb-6 text-[0.6rem] uppercase tracking-[0.3em] text-cream/45" aria-label="Breadcrumb">
+        <a href="{% url 'store:home' %}" class="transition hover:text-gold">Home</a> &nbsp;/&nbsp;
+        {% for category in categories %}{% if category.slug == selected_category %}
+        <a href="{% url 'store:shop' %}" class="transition hover:text-gold">Shop</a> &nbsp;/&nbsp; <span class="text-gold">{{ category.name }}</span>
+        {% endif %}{% empty %}<span class="text-gold">Shop</span>{% endfor %}
+        {% if not selected_category %}<span class="text-gold">Clothing</span>{% endif %}
+    </nav>
+
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
+        <div>
+            <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">The collection</p>
+            <h1 class="mt-2 font-heading text-3xl text-cream md:text-4xl">
+                {% for category in categories %}{% if category.slug == selected_category %}{{ category.name }}{% endif %}{% empty %}Clothing{% endfor %}
+                {% if not selected_category %}Clothing{% endif %}
+            </h1>
+            <p class="mt-2 text-sm text-cream/50">{{ page_obj.paginator.count }} piece{{ page_obj.paginator.count|pluralize }} &middot; free shipping nationwide</p>
+        </div>
+        <form method="get" action="{% url 'store:shop' %}" class="flex items-center gap-3">
+            {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+            {% if selected_size %}<input type="hidden" name="size" value="{{ selected_size }}">{% endif %}
+            {% if selected_color %}<input type="hidden" name="color" value="{{ selected_color }}">{% endif %}
+            {% if min_price %}<input type="hidden" name="min_price" value="{{ min_price }}">{% endif %}
+            {% if max_price %}<input type="hidden" name="max_price" value="{{ max_price }}">{% endif %}
+            {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+            <label for="sort-select" class="text-[0.58rem] uppercase tracking-[0.25em] text-cream/50">Sort by</label>
+            <select id="sort-select" name="sort" class="border border-white/15 bg-ink/70 px-3 py-2.5 text-xs text-cream focus:border-gold focus:outline-none">
+                <option value="featured" {% if selected_sort == "featured" %}selected{% endif %}>Featured</option>
+                <option value="newest" {% if selected_sort == "newest" %}selected{% endif %}>Newest arrivals</option>
+                <option value="price_low" {% if selected_sort == "price_low" %}selected{% endif %}>Price: Low to High</option>
+                <option value="price_high" {% if selected_sort == "price_high" %}selected{% endif %}>Price: High to Low</option>
+                <option value="name_asc" {% if selected_sort == "name_asc" %}selected{% endif %}>Name: A to Z</option>
+            </select>
+            <button type="submit" class="border border-gold/70 px-4 py-2.5 text-[0.6rem] font-bold uppercase tracking-[0.22em] text-gold transition hover:bg-gold hover:text-ink">Apply</button>
+        </form>
+    </div>
+
+    {% if selected_size or selected_color or min_price or max_price or q %}
+    <div class="mb-6 flex flex-wrap items-center gap-2 text-[0.6rem] uppercase tracking-[0.2em]">
+        <span class="text-cream/45">Active filters:</span>
+        {% if q %}<a href="{% url 'store:shop' %}?q={{ q }}" class="border border-gold/50 px-2.5 py-1 text-gold">&ldquo;{{ q }}&rdquo; &times;</a>{% endif %}
+        {% if selected_size %}<a href="{% url 'store:shop' %}?size={{ selected_size }}" class="border border-gold/50 px-2.5 py-1 text-gold">Size {{ selected_size }} &times;</a>{% endif %}
+        {% if selected_color %}<a href="{% url 'store:shop' %}?color={{ selected_color }}" class="border border-gold/50 px-2.5 py-1 text-gold">{{ selected_color }} &times;</a>{% endif %}
+        {% if min_price or max_price %}<a href="{% url 'store:shop' %}" class="border border-gold/50 px-2.5 py-1 text-gold">৳{{ min_price|default:0 }} &ndash; ৳{{ max_price|default:"any" }} &times;</a>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="flex flex-col gap-8 lg:flex-row">
+        {% include "store/components/filter_sidebar.html" %}
+
+        <div class="min-w-0 flex-1">
+            <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+                {% for product in products %}
+                {% include "store/components/product_card.html" with product=product %}
+                {% empty %}
+                <div class="col-span-full border border-dashed border-white/20 bg-white/[0.03] px-6 py-16 text-center">
+                    <h2 class="font-heading text-xl text-gold">Nothing matches those filters</h2>
+                    <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-cream/55">Try a different category, size or price range &mdash; the full collection is one click away.</p>
+                    <a href="{% url 'store:shop' %}" class="mt-6 inline-block border border-gold/70 px-7 py-3 text-[0.62rem] font-bold uppercase tracking-[0.28em] text-gold transition hover:bg-gold hover:text-ink">Clear all filters</a>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% include "store/components/pagination.html" %}
+        </div>
+    </div>
+</section>
+{% endblock %}

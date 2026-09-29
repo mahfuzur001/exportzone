@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="My account | Export Zone" %}{% seo_meta %}{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-7xl px-4 py-14 lg:px-6">
+    <nav class="mb-6 text-[0.6rem] uppercase tracking-[0.3em] text-cream/45" aria-label="Breadcrumb">
+        <a href="{% url 'store:home' %}" class="transition hover:text-gold">Home</a> &nbsp;/&nbsp; <span class="text-gold">Account</span>
+    </nav>
+    <div class="mb-8 border-b border-white/10 pb-6">
+        <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">Member profile</p>
+        <h1 class="mt-2 font-heading text-3xl text-cream">My account</h1>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-[1fr_20rem]">
+        <div class="space-y-6">
+            <section class="border border-white/10 bg-white/[0.03] p-6">
+                <h2 class="mb-5 font-heading text-lg text-cream">Profile details</h2>
+                <dl class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <dt class="text-[0.6rem] uppercase tracking-[0.25em] text-cream/45">Full name</dt>
+                        <dd class="mt-1 text-sm text-cream/85">{{ request.user.full_name }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[0.6rem] uppercase tracking-[0.25em] text-cream/45">Email</dt>
+                        <dd class="mt-1 break-all text-sm text-cream/85">{{ request.user.email }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[0.6rem] uppercase tracking-[0.25em] text-cream/45">Phone</dt>
+                        <dd class="mt-1 text-sm text-cream/85">{{ request.user.phone }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[0.6rem] uppercase tracking-[0.25em] text-cream/45">Member since</dt>
+                        <dd class="mt-1 text-sm text-cream/85">{{ request.user.date_joined|date:"d M Y" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[0.6rem] uppercase tracking-[0.25em] text-cream/45">Account status</dt>
+                        <dd class="mt-1 text-sm text-gold">Active</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[0.6rem] uppercase tracking-[0.25em] text-cream/45">Last login</dt>
+                        <dd class="mt-1 text-sm text-cream/85">{{ request.user.last_login|date:"d M Y"|default:"—" }}</dd>
+                    </div>
+                </dl>
+            </section>
+            <section class="border border-white/10 bg-white/[0.03] p-6">
+                <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <h2 class="font-heading text-lg text-cream">Recent orders</h2>
+                    <a href="{% url 'orders:list' %}" class="text-[0.6rem] uppercase tracking-[0.25em] text-gold transition hover:text-cream">View all ({{ order_count }})</a>
+                </div>
+                {% if recent_orders %}
+                <ul class="divide-y divide-white/10">
+                    {% for order in recent_orders %}
+                    <li class="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+                        <a href="{% url 'orders:detail' order.order_number %}" class="font-semibold text-cream transition hover:text-gold">{{ order.order_number }}</a>
+                        <span class="text-[0.62rem] uppercase tracking-[0.2em] text-cream/45">{{ order.created_at|date:"d M Y" }}</span>
+                        <span class="border border-white/20 px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.2em] text-cream/60">{{ order.get_status_display }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-sm leading-relaxed text-cream/55">You have not placed any orders yet. <a href="{% url 'store:shop' %}" class="text-gold transition hover:text-cream">Start shopping</a>.</p>
+                {% endif %}
+            </section>
+
+            <section class="border border-white/10 bg-white/[0.03] p-6">
+                <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <h2 class="font-heading text-lg text-cream">Saved addresses</h2>
+                    <a href="{% url 'accounts:address_list' %}" class="text-[0.6rem] uppercase tracking-[0.25em] text-gold transition hover:text-cream">Manage ({{ address_count }})</a>
+                </div>
+                {% if default_address %}
+                <p class="text-sm leading-relaxed text-cream/70">
+                    {{ default_address.full_name }} &middot; {{ default_address.phone }}<br>
+                    {{ default_address.address }}, {{ default_address.area }}
+                    {% if default_address.is_default %}<span class="ml-2 border border-gold/40 px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.2em] text-gold">Default</span>{% endif %}
+                </p>
+                {% else %}
+                <p class="text-sm leading-relaxed text-cream/55">No saved addresses yet. <a href="{% url 'accounts:address_add' %}" class="text-gold transition hover:text-cream">Add one</a>.</p>
+                {% endif %}
+            </section>
+        </div>
+
+        <aside class="space-y-4 self-start border border-white/10 bg-white/[0.03] p-6 lg:sticky lg:top-[88px]">
+            <h2 class="font-heading text-lg text-cream">Account actions</h2>
+            <nav class="flex flex-col gap-2" aria-label="Account sections">
+                <a href="{% url 'orders:list' %}" class="border border-white/15 px-4 py-2.5 text-center text-[0.6rem] uppercase tracking-[0.25em] text-cream/70 transition hover:border-gold hover:text-gold">My orders</a>
+                <a href="{% url 'accounts:address_list' %}" class="border border-white/15 px-4 py-2.5 text-center text-[0.6rem] uppercase tracking-[0.25em] text-cream/70 transition hover:border-gold hover:text-gold">Addresses</a>
+                <a href="{% url 'accounts:change_password' %}" class="border border-white/15 px-4 py-2.5 text-center text-[0.6rem] uppercase tracking-[0.25em] text-cream/70 transition hover:border-gold hover:text-gold">Change password</a>
+            </nav>
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="w-full border border-red-400/40 px-4 py-2.5 text-[0.6rem] uppercase tracking-[0.25em] text-red-300 transition hover:border-red-400 hover:text-red-200">Sign out</button>
+            </form>
+        </aside>
+    </div>
+</section>
+{% endblock %}

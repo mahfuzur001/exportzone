@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="My Orders | Export Zone" %}{% seo_meta %}{% endblock %}
+
+{% block content %}
+<section class="order-page"><div class="order-heading"><p class="eyebrow"><span></span> Account</p><h1>My orders</h1></div><div class="order-list order-panel">{% for order in orders %}<a class="order-row" href="{% url 'orders:detail' order.order_number %}"><span><strong>{{ order.order_number }}</strong><small>{{ order.created_at|date:"M d, Y" }} · {{ order.items.count }} item{{ order.items.count|pluralize }}</small></span><span><b>৳{{ order.total_amount|floatformat:2 }}</b><small>{{ order.get_status_display }}</small></span></a>{% empty %}<div class="empty-cart"><h2>No orders yet</h2><p>Your completed orders will appear here.</p><a class="button button-gold" href="{% url 'store:shop' %}">Shop now</a></div>{% endfor %}</div></section>
+{% endblock %}

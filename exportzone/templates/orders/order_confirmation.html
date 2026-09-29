@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load seo_tags %}
+{% block seo_head %}{% push_seo title=order.order_number %}{% seo_meta %}{% endblock %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto px-4 lg:px-8 py-12 lg:py-24 text-center">
+  <div class="mb-12">
+    <div class="w-20 h-20 mx-auto bg-ink border border-gold/30 rounded-full flex items-center justify-center mb-8 text-gold">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+    </div>
+    <div class="flex items-center gap-3 text-gold text-xs font-extrabold tracking-[0.2em] uppercase mb-4 justify-center">
+      <span class="w-8 h-px bg-gold"></span> Order Placed Successfully
+    </div>
+    <h1 class="text-cream font-heading text-3xl lg:text-5xl mb-6">Thank you for shopping<br>with Export Zone.</h1>
+    <p class="text-gray-400 mb-8 max-w-md mx-auto">Your order is now pending and will be prepared for delivery.</p>
+    
+    <div class="bg-charcoal border border-white/10 p-6 inline-block mx-auto mb-12 relative group cursor-pointer" data-copy-order="{{ order.order_number }}">
+      <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Order Number</p>
+      <strong class="text-pale-gold text-2xl font-mono">{{ order.order_number }}</strong>
+      <div class="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <span class="bg-ink text-gold text-xs font-bold px-3 py-1 uppercase tracking-widest copy-text">Copy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-12">
+    <div class="bg-charcoal border border-white/10 p-8">
+      <h2 class="text-cream font-heading text-xl mb-6">Items</h2>
+      <div class="space-y-4">
+        {% for item in order.items.all %}
+          <div class="flex items-start justify-between pb-4 border-b border-white/5 last:border-0 last:pb-0 gap-4">
+            <div>
+              <strong class="text-cream font-semibold text-sm block mb-1">{{ item.product_name_snapshot }}</strong>
+              <span class="text-gray-400 text-xs">{{ item.size_snapshot }} · {{ item.color_snapshot }} · Qty {{ item.quantity }}</span>
+            </div>
+            <span class="text-pale-gold text-sm font-semibold shrink-0">৳{{ item.subtotal|floatformat:2 }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="bg-charcoal border border-white/10 p-8">
+      <h2 class="text-cream font-heading text-xl mb-6">Summary</h2>
+      <dl class="space-y-4 text-sm">
+        <div class="flex justify-between pb-4 border-b border-white/5">
+          <dt class="text-gray-400">Status</dt>
+          <dd class="text-cream font-bold">{{ order.get_status_display }}</dd>
+        </div>
+        <div class="flex justify-between pb-4 border-b border-white/5">
+          <dt class="text-gray-400">Payment</dt>
+          <dd class="text-cream font-bold">Cash on Delivery</dd>
+        </div>
+        <div class="flex justify-between pb-4 border-b border-white/5">
+          <dt class="text-gray-400">Shipping</dt>
+          <dd class="text-cream font-bold">৳{{ order.shipping_charge|floatformat:2 }}</dd>
+        </div>
+        <div class="flex justify-between pt-2">
+          <dt class="text-pale-gold font-bold text-lg">Total</dt>
+          <dd class="text-pale-gold font-bold text-lg">৳{{ order.total_amount|floatformat:2 }}</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="flex flex-col sm:flex-row justify-center gap-4">
+    <a class="bg-gradient-to-r from-[#ba8428] via-[#f59e0b] to-[#b67e25] text-[#101010] font-black uppercase tracking-[0.15em] px-8 py-4 rounded-sm hover:brightness-110 transition-all focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-ink text-xs" href="{% url 'orders:detail' order.order_number %}">Track Order</a>
+    <a class="bg-transparent border border-white/20 hover:border-gold text-cream hover:text-gold font-bold uppercase tracking-widest px-8 py-4 rounded-sm transition-colors text-xs" href="{% url 'store:shop' %}">Continue Shopping</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.querySelector('[data-copy-order]')?.addEventListener('click', async (event) => { 
+    const el = event.currentTarget;
+    await navigator.clipboard.writeText(el.dataset.copyOrder);
+    const textEl = el.querySelector('.copy-text');
+    if(textEl) {
+      textEl.textContent = 'Copied!';
+      setTimeout(() => textEl.textContent = 'Copy', 2000);
+    }
+  });
+</script>
+{% endblock %}

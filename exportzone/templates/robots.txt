@@ -1,0 +1,17 @@
+{% comment %}
+Generated from apps.core.seo.PRIVATE_PREFIXES so this file can never drift away from
+the routes the project actually serves. Everything listed is per-visitor, behind a
+login, or a utility endpoint - there is nothing in it worth indexing.
+
+Filtered, sorted and searched shop views are deliberately NOT blocked: they carry a
+noindex meta tag on the page itself, which a crawler can only read if it is allowed
+to fetch them. Blocking them here would also cut off the paginated and category
+listings, which are genuine indexable pages.
+
+Static and media assets are likewise left crawlable, because search engines must
+fetch the CSS, JS and images in order to render the pages.
+{% endcomment %}
+User-agent: *
+{% for prefix in seo_private_prefixes %}Disallow: /{{ prefix }}
+{% endfor %}
+Sitemap: {{ seo_site_url }}/sitemap.xml

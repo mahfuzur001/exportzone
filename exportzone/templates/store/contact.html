@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="Contact Us | Export Zone" %}{% seo_meta %}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-16 lg:py-24">
+  <div class="text-center mb-16">
+    <div class="flex items-center gap-3 text-gold text-xs font-extrabold tracking-[0.2em] uppercase mb-4 justify-center">
+      <span class="w-8 h-px bg-gold"></span> GET IN TOUCH <span class="w-8 h-px bg-gold"></span>
+    </div>
+    <h1 class="text-cream font-heading text-4xl lg:text-5xl mb-6">Contact Us</h1>
+    <p class="text-gray-400 max-w-lg mx-auto">We're here to help. Send us a message and we'll respond as soon as possible.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    <!-- Contact Info -->
+    <div class="space-y-8">
+      <div class="bg-charcoal p-8 border border-white/10 h-full">
+        <h2 class="text-cream font-heading text-xl mb-8">Contact Information</h2>
+        
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-ink border border-gold/30 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-cream font-heading text-sm uppercase tracking-widest mb-1">Location</h3>
+              <p class="text-gray-400">Meherpur, Bangladesh</p>
+            </div>
+          </div>
+          
+          <!-- Additional actual info would go here if provided in prompt, but only Location was specified to not invent -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="bg-charcoal p-8 border border-white/10">
+      <form method="POST" action="{% url 'store:contact' %}" class="space-y-6">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="text-xs text-red-300">{% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+
+        <div>
+          <label for="{{ form.name.id_for_label }}" class="block text-[#e5d4a6] text-[0.73rem] font-extrabold uppercase tracking-widest mb-2">Name</label>
+          {{ form.name }}
+          {% for error in form.name.errors %}<p class="mt-1 text-xs text-red-300">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div>
+          <label for="{{ form.email.id_for_label }}" class="block text-[#e5d4a6] text-[0.73rem] font-extrabold uppercase tracking-widest mb-2">Email</label>
+          {{ form.email }}
+          {% for error in form.email.errors %}<p class="mt-1 text-xs text-red-300">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div>
+          <label for="{{ form.phone.id_for_label }}" class="block text-[#e5d4a6] text-[0.73rem] font-extrabold uppercase tracking-widest mb-2">Phone (optional)</label>
+          {{ form.phone }}
+          {% for error in form.phone.errors %}<p class="mt-1 text-xs text-red-300">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div>
+          <label for="{{ form.message.id_for_label }}" class="block text-[#e5d4a6] text-[0.73rem] font-extrabold uppercase tracking-widest mb-2">Message</label>
+          {{ form.message }}
+          {% for error in form.message.errors %}<p class="mt-1 text-xs text-red-300">{{ error }}</p>{% endfor %}
+        </div>
+
+        <button type="submit" class="w-full bg-gradient-to-r from-[#ba8428] via-[#f59e0b] to-[#b67e25] text-[#101010] font-black uppercase tracking-[0.15em] py-4 rounded-sm hover:brightness-110 transition-all focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-ink">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

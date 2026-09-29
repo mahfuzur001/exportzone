@@ -1,0 +1,204 @@
+{% load static %}{% load seo_tags %}<!doctype html>
+<html lang="{{ seo_language|default:'en' }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {# No arguments: every page's values arrive via the view, the ``seo`` context
+       processor, or a ``{% push_seo %}`` in the child template. Naming keys here that
+       nothing sets would make this block silently override them with blanks. #}
+    {% block seo_head %}{% seo_meta %}{% endblock %}
+    <meta name="theme-color" content="#08090c">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ink: '#08090c',
+                        charcoal: '#111218',
+                        gold: '#d4af37',
+                        'pale-gold': '#f59e0b',
+                        cream: '#f7f2e7'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        heading: ['"Playfair Display"', 'Georgia', 'serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <style>[x-cloak] { display: none !important; }</style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-ink text-cream font-sans antialiased">
+    <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-ink/95 backdrop-blur" x-data="{ open: false }">
+        <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 px-4 lg:px-6">
+            <button type="button" class="-ml-2 p-2 text-cream/80 transition hover:text-gold lg:hidden" @click="open = !open" aria-label="Toggle navigation menu" :aria-expanded="open">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+            </button>
+
+            <a href="{% url 'store:home' %}" class="group flex shrink-0 items-center gap-3">
+                <span class="grid h-10 w-10 place-items-center rounded-full border border-gold/70 text-gold transition group-hover:border-gold" aria-hidden="true">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 3.9 5.7 3.9 9s-1.3 6.3-3.9 9c-2.6-2.7-3.9-5.7-3.9-9S9.4 5.7 12 3z"/></svg>
+                </span>
+                <span class="hidden leading-tight sm:block">
+                    <span class="block font-heading text-lg tracking-[0.18em] text-cream">EXPORT <span class="text-gold">ZONE</span></span>
+                    <span class="mt-0.5 block text-[0.56rem] uppercase tracking-[0.42em] text-gold/80">Premium Clothing</span>
+                </span>
+            </a>
+
+            <nav class="hidden items-center gap-5 text-[0.68rem] uppercase tracking-[0.18em] xl:flex" aria-label="Primary navigation">
+                <a href="{% url 'store:home' %}" class="transition {% if request.resolver_match.url_name == 'home' %}text-gold{% else %}text-cream/70 hover:text-gold{% endif %}">Home</a>
+                {% for category in footer_categories|slice:":4" %}
+                <a href="{% url 'store:shop' %}?category={{ category.slug }}" class="transition {% if request.GET.category == category.slug %}text-gold{% else %}text-cream/70 hover:text-gold{% endif %}">{{ category.name }}</a>
+                {% endfor %}
+                <a href="{% url 'store:shop' %}?sort=newest" class="text-cream/70 transition hover:text-gold">New Arrivals</a>
+                <a href="{% url 'store:shop' %}?sort=featured" class="text-cream/70 transition hover:text-gold">Collections</a>
+                <a href="{% url 'store:shop' %}" class="transition {% if request.resolver_match.url_name == 'shop' %}text-gold{% else %}text-cream/70 hover:text-gold{% endif %}">Shop</a>
+                <a href="{% url 'store:about' %}" class="text-cream/70 transition hover:text-gold">About</a>
+                <a href="{% url 'store:contact' %}" class="text-cream/70 transition hover:text-gold">Contact</a>
+            </nav>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <form method="get" action="{% url 'store:shop' %}" class="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 transition focus-within:border-gold/60 lg:flex xl:w-52" role="search">
+                    <svg class="h-4 w-4 shrink-0 text-cream/50" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M17 10.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
+                    <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search products" aria-label="Search products" class="w-full border-0 bg-transparent p-0 text-xs text-cream placeholder:text-cream/40 focus:ring-0">
+                </form>
+                <a href="{% url 'store:shop' %}" class="p-2 text-cream/80 transition hover:text-gold lg:hidden" aria-label="Search products">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M17 10.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>
+                </a>
+                <a href="{% url 'accounts:account' %}" class="p-2 text-cream/80 transition hover:text-gold" aria-label="Account">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.1a7.5 7.5 0 0 1 15 0A17.9 17.9 0 0 1 12 22c-2.7 0-5.3-.6-7.5-1.9Z"/></svg>
+                </a>
+                {% if user.is_staff %}
+                <a href="{% url 'admin_dashboard:dashboard' %}" class="hidden border border-gold/40 px-2.5 py-1.5 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-gold transition hover:border-gold hover:text-pale-gold sm:block" aria-label="Admin dashboard">Admin</a>
+                {% endif %}
+                <a href="{% url 'cart:detail' %}" class="relative p-2 text-cream/80 transition hover:text-gold" aria-label="Cart{% if cart_item_count > 0 %} ({{ cart_item_count }}){% endif %}">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.4a.75.75 0 0 1 .73.58L5.1 6.5m0 0 1.7 7.4a1.5 1.5 0 0 0 1.46 1.17h8.63a1.5 1.5 0 0 0 1.46-1.12l1.28-5.95H5.1ZM9 19.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm9 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+                    {% if cart_item_count > 0 %}
+                    <span class="absolute -right-0.5 -top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-gold px-1 text-[0.6rem] font-bold text-ink">{{ cart_item_count }}</span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+
+        <div x-show="open" x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="-translate-y-2 opacity-0" x-transition:enter-end="translate-y-0 opacity-100" x-cloak class="max-h-[70vh] overflow-y-auto border-t border-white/10 bg-ink px-4 py-4 xl:hidden">
+            <nav class="flex flex-col gap-1 text-sm uppercase tracking-[0.16em]" aria-label="Mobile navigation">
+                <a href="{% url 'store:home' %}" class="border-l-2 px-3 py-2.5 transition {% if request.resolver_match.url_name == 'home' %}border-gold text-gold{% else %}border-transparent text-cream/80 hover:border-gold hover:text-gold{% endif %}">Home</a>
+                {% for category in footer_categories %}
+                <a href="{% url 'store:shop' %}?category={{ category.slug }}" class="border-l-2 px-3 py-2.5 transition {% if request.GET.category == category.slug %}border-gold text-gold{% else %}border-transparent text-cream/80 hover:border-gold hover:text-gold{% endif %}">{{ category.name }}</a>
+                {% endfor %}
+                <a href="{% url 'store:shop' %}?sort=newest" class="border-l-2 border-transparent px-3 py-2.5 text-cream/80 transition hover:border-gold hover:text-gold">New Arrivals</a>
+                <a href="{% url 'store:shop' %}?sort=featured" class="border-l-2 border-transparent px-3 py-2.5 text-cream/80 transition hover:border-gold hover:text-gold">Collections</a>
+                <a href="{% url 'store:shop' %}" class="border-l-2 border-transparent px-3 py-2.5 text-cream/80 transition hover:border-gold hover:text-gold">Shop All</a>
+                <a href="{% url 'store:about' %}" class="border-l-2 border-transparent px-3 py-2.5 text-cream/80 transition hover:border-gold hover:text-gold">About</a>
+                <a href="{% url 'store:contact' %}" class="border-l-2 border-transparent px-3 py-2.5 text-cream/80 transition hover:border-gold hover:text-gold">Contact</a>
+                <a href="{% url 'accounts:account' %}" class="border-l-2 border-transparent px-3 py-2.5 text-cream/80 transition hover:border-gold hover:text-gold">My Account</a>
+                {% if user.is_staff %}
+                <a href="{% url 'admin_dashboard:dashboard' %}" class="border-l-2 border-transparent px-3 py-2.5 text-gold transition hover:border-gold hover:text-pale-gold">Admin dashboard</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    {% if messages %}
+    <div class="pointer-events-none fixed left-1/2 top-[84px] z-[60] w-[min(92vw,44rem)] -translate-x-1/2 space-y-2" role="alert" aria-live="polite">
+        {% for message in messages %}
+        <div x-data="{ show: true }" x-init="setTimeout(() => { show = false }, 6000)" x-show="show" x-transition.opacity class="pointer-events-auto flex items-start gap-3 border px-4 py-3 text-sm shadow-2xl backdrop-blur {% if 'error' in message.tags %}border-red-400/60 bg-red-950/80 text-red-100{% elif 'warning' in message.tags %}border-amber-400/60 bg-amber-950/80 text-amber-100{% elif 'success' in message.tags %}border-gold/60 bg-ink/95 text-gold{% else %}border-white/25 bg-ink/95 text-cream{% endif %}">
+            <span class="mt-0.5 shrink-0" aria-hidden="true">&#9819;</span>
+            <span>{{ message }}</span>
+            <button type="button" class="ml-auto shrink-0 text-xs uppercase tracking-widest opacity-60 transition hover:opacity-100" @click="show = false" aria-label="Dismiss notification">&#10005;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="pt-[72px]">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t border-white/10 bg-ink pb-16 lg:pb-0">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4 lg:px-6">
+            <div>
+                <a href="{% url 'store:home' %}" class="flex items-center gap-3">
+                    <span class="grid h-9 w-9 place-items-center rounded-full border border-gold/70 text-gold text-sm" aria-hidden="true">&#9670;</span>
+                    <span class="font-heading text-base tracking-[0.2em] text-cream">EXPORT <span class="text-gold">ZONE</span></span>
+                </a>
+                <p class="mt-4 text-sm leading-relaxed text-cream/55">Premium jeans, shirts and polo t-shirts crafted for comfort, style and distinction. Designed in Meherpur, delivered nationwide.</p>
+                <p class="mt-5 text-[0.58rem] uppercase tracking-[0.3em] text-gold/80">Est. export house &middot; Bangladesh</p>
+            </div>
+            <div>
+                <h3 class="text-[0.6rem] font-bold uppercase tracking-[0.35em] text-gold">Shop</h3>
+                <ul class="mt-4 space-y-1.5 text-sm">
+                    {% for category in footer_categories %}
+                    <li><a href="{% url 'store:shop' %}?category={{ category.slug }}" class="text-cream/60 transition hover:text-gold">{{ category.name }}</a></li>
+                    {% empty %}
+                    <li class="text-sm text-cream/45">New categories coming soon.</li>
+                    {% endfor %}
+                    <li><a href="{% url 'store:shop' %}" class="text-cream/60 transition hover:text-gold">All products</a></li>
+                    <li><a href="{% url 'store:shop' %}?sort=newest" class="text-cream/60 transition hover:text-gold">New arrivals</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-[0.6rem] font-bold uppercase tracking-[0.35em] text-gold">Customer care</h3>
+                <ul class="mt-4 space-y-1.5 text-sm">
+                    <li><a href="{% url 'store:contact' %}" class="text-cream/60 transition hover:text-gold">Contact us</a></li>
+                    <li><a href="{% url 'orders:list' %}" class="text-cream/60 transition hover:text-gold">Track my order</a></li>
+                    <li><a href="{% url 'cart:detail' %}" class="text-cream/60 transition hover:text-gold">Shopping cart</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'accounts:account' %}" class="text-cream/60 transition hover:text-gold">My account</a></li>
+                    {% else %}
+                    <li><a href="{% url 'accounts:register' %}" class="text-cream/60 transition hover:text-gold">Create account</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-[0.6rem] font-bold uppercase tracking-[0.35em] text-gold">Company</h3>
+                <ul class="mt-4 space-y-1.5 text-sm">
+                    <li><a href="{% url 'store:about' %}" class="text-cream/60 transition hover:text-gold">About us</a></li>
+                    <li><a href="{% url 'store:contact' %}" class="text-cream/60 transition hover:text-gold">Store location</a></li>
+                </ul>
+                <address class="mt-5 space-y-1 text-sm not-italic text-cream/50">
+                    <p>Meherpur, Bangladesh</p>
+                    <p>support@exportzone.example</p>
+                    <p>Sat &ndash; Thu, 9:00 &ndash; 18:00</p>
+                </address>
+            </div>
+        </div>
+        <div class="border-t border-white/10">
+            <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-cream/45 sm:flex-row sm:items-center sm:justify-between lg:px-6">
+                <p>&copy; {% now "Y" %} EXPORT ZONE &mdash; Premium Clothing. All rights reserved.</p>
+                <p class="text-gold/70">Cash on delivery &middot; Free shipping &middot; Secure member accounts</p>
+            </div>
+        </div>
+    </footer>
+    <nav class="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-white/10 bg-ink/95 backdrop-blur lg:hidden" aria-label="Quick links">
+        <a href="{% url 'store:home' %}" class="flex flex-col items-center gap-1 py-2.5 text-[0.55rem] uppercase tracking-[0.18em] transition {% if request.resolver_match.url_name == 'home' %}text-gold{% else %}text-cream/70 hover:text-gold{% endif %}">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955a1.126 1.126 0 0 1 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
+            Home
+        </a>
+        <a href="{% url 'store:shop' %}" class="flex flex-col items-center gap-1 py-2.5 text-[0.55rem] uppercase tracking-[0.18em] transition {% if request.resolver_match.url_name == 'shop' or request.resolver_match.url_name == 'product_detail' %}text-gold{% else %}text-cream/70 hover:text-gold{% endif %}">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"/></svg>
+            Shop
+        </a>
+        <a href="{% url 'cart:detail' %}" class="relative flex flex-col items-center gap-1 py-2.5 text-[0.55rem] uppercase tracking-[0.18em] text-cream/70 transition hover:text-gold">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.4a.75.75 0 0 1 .73.58L5.1 6.5m0 0 1.7 7.4a1.5 1.5 0 0 0 1.46 1.17h8.63a1.5 1.5 0 0 0 1.46-1.12l1.28-5.95H5.1ZM9 19.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm9 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+            Cart
+            {% if cart_item_count > 0 %}
+            <span class="absolute right-[calc(50%-1.4rem)] top-1 grid h-4 min-w-4 place-items-center rounded-full bg-gold px-1 text-[0.55rem] font-bold text-ink">{{ cart_item_count }}</span>
+            {% endif %}
+        </a>
+        <a href="{% url 'accounts:account' %}" class="flex flex-col items-center gap-1 py-2.5 text-[0.55rem] uppercase tracking-[0.18em] text-cream/70 transition hover:text-gold">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.1a7.5 7.5 0 0 1 15 0A17.9 17.9 0 0 1 12 22c-2.7 0-5.3-.6-7.5-1.9Z"/></svg>
+            Account
+        </a>
+    </nav>
+
+    {% block extra_js %}{% endblock %}
+    <script src="{% static 'js/site.js' %}"></script>
+</body>
+</html>

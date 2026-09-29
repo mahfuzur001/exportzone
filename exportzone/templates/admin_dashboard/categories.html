@@ -1,0 +1,37 @@
+{% extends "admin_dashboard/base.html" %}
+{% block heading %}Categories{% endblock %}
+{% block content %}
+<div class="admin-panel-heading">
+  <span>Catalog organization</span>
+  <a class="button button-gold" href="{% url 'admin_dashboard:category_add' %}">Add category</a>
+</div>
+<section class="admin-panel">
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr><th>Name</th><th>Products</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+        <tr>
+          <td>{{ category.name }}</td>
+          <td>{{ category.product_count }}</td>
+          <td>{{ category.is_active|yesno:"Active,Inactive" }}</td>
+          <td>
+            <a href="{% url 'admin_dashboard:category_edit' category.id %}">Edit</a>
+            {% if category.product_count == 0 %}
+            <form class="admin-inline-form" method="post" action="{% url 'admin_dashboard:category_delete' category.id %}">
+              {% csrf_token %}
+              <button type="submit">Delete</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="admin-empty">No categories.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

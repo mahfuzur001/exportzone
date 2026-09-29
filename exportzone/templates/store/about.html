@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="About Us | Export Zone" %}{% seo_meta %}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-16 lg:py-24">
+  <div class="text-center mb-16">
+    <div class="flex items-center gap-3 text-gold text-xs font-extrabold tracking-[0.2em] uppercase mb-4 justify-center">
+      <span class="w-8 h-px bg-gold"></span> OUR STORY <span class="w-8 h-px bg-gold"></span>
+    </div>
+    <h1 class="text-cream font-heading text-4xl lg:text-5xl mb-6">About Export Zone</h1>
+  </div>
+
+  <div class="prose prose-invert prose-gold max-w-none">
+    <div class="bg-charcoal p-8 md:p-12 border border-white/10 mb-12">
+      <p class="text-lg text-gray-300 leading-relaxed mb-6">
+        Export Zone is a clothing brand focused on quality clothing and a simple customer shopping experience.
+      </p>
+      <p class="text-gray-400 leading-relaxed">
+        We believe that premium quality doesn't have to be complicated. Our focus is on delivering essentials that form the foundation of a refined wardrobe. Every piece we offer is selected with comfort, durability, and timeless style in mind.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+      <div>
+        <h2 class="text-cream font-heading text-2xl mb-6">Our Products</h2>
+        <ul class="space-y-4 text-gray-400">
+          <li class="flex items-center gap-3">
+            <span class="text-gold">◈</span> Jeans
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="text-gold">◈</span> Shirts
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="text-gold">◈</span> Polo T-Shirts
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="text-gold">◈</span> Formal Shirts
+          </li>
+        </ul>
+      </div>
+      <div class="bg-ink p-8 border border-white/5">
+        <h2 class="text-cream font-heading text-xl mb-4">Location</h2>
+        <p class="text-gray-400 flex items-start gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gold shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Based in Meherpur, Bangladesh, we serve customers with dedication and a commitment to quality.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

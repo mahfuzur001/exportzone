@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="Your Cart | Export Zone" %}{% seo_meta %}{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-7xl px-4 py-14 lg:px-6">
+    <nav class="mb-6 text-[0.6rem] uppercase tracking-[0.3em] text-cream/45" aria-label="Breadcrumb">
+        <a href="{% url 'store:home' %}" class="transition hover:text-gold">Home</a> &nbsp;/&nbsp; <span class="text-gold">Cart</span>
+    </nav>
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-3">
+        <div>
+            <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">Your bag</p>
+            <h1 class="mt-2 font-heading text-3xl text-cream">Shopping cart</h1>
+        </div>
+        {% if cart.items.all %}
+        <span class="border border-gold/40 px-3 py-1.5 text-[0.6rem] uppercase tracking-[0.25em] text-gold">{{ cart.item_count }} item{{ cart.item_count|pluralize }}</span>
+        {% endif %}
+    </div>
+
+    {% if not cart.items.all %}
+    <div class="border border-dashed border-white/20 bg-white/[0.03] px-6 py-16 text-center">
+        <span class="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full border border-gold/50 font-heading text-2xl text-gold" aria-hidden="true">৳</span>
+        <h2 class="font-heading text-2xl text-gold">Your Cart is Empty</h2>
+        <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-cream/55">Browse the catalog and add premium denim, shirts or polo t-shirts to your bag.</p>
+        <a href="{% url 'store:shop' %}" class="mt-7 inline-block border border-gold bg-gradient-to-r from-[#ba8428] via-gold to-[#b67e25] px-8 py-3.5 text-[0.65rem] font-bold uppercase tracking-[0.3em] text-ink transition hover:brightness-110">Start shopping</a>
+    </div>
+    {% else %}
+    <div class="grid gap-8 lg:grid-cols-[1fr_20rem]">
+        <div class="space-y-4">
+            {% for item in cart.items.all %}
+            <article class="flex flex-wrap gap-4 border border-white/10 bg-white/[0.03] p-4 sm:flex-nowrap">
+                <a href="{% url 'store:product_detail' item.product_variant.product.slug %}" class="grid h-24 w-20 shrink-0 place-items-center overflow-hidden border border-white/10 bg-gradient-to-br from-white/[0.07] to-gold/10">
+                    {% with image=item.product_variant.product.primary_image %}
+                    {% if image %}<img src="{{ image.image.url }}" alt="{{ item.product_variant.product.name }}" class="h-full w-full object-cover">{% else %}
+                    <span class="font-heading text-xs uppercase tracking-[0.2em] text-gold">EZ</span>{% endif %}
+                    {% endwith %}
+                </a>
+                <div class="min-w-0 flex-1">
+                    <h2 class="font-heading text-base leading-snug text-cream">
+                        <a href="{% url 'store:product_detail' item.product_variant.product.slug %}" class="transition hover:text-gold">{{ item.product_variant.product.name }}</a>
+                    </h2>
+                    <p class="mt-1 text-[0.68rem] uppercase tracking-[0.2em] text-cream/50">Size {{ item.product_variant.size }} &middot; {{ item.product_variant.color }}</p>
+                    <p class="mt-1 text-xs text-cream/45">SKU {{ item.product_variant.sku }}</p>
+                    <p class="mt-1.5 text-xs text-cream/60">Unit ৳{{ item.unit_price|floatformat:2 }}</p>
+                </div>
+                <div class="flex flex-col items-start gap-3 sm:items-end">
+                    <form method="post" action="{% url 'cart:update' item.pk %}" class="flex items-center gap-1.5">
+                        {% csrf_token %}
+                        <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" class="grid h-8 w-8 place-items-center border border-white/15 text-cream/70 transition hover:border-gold hover:text-gold" aria-label="Decrease quantity">&minus;</button>
+                        <span class="w-8 text-center text-sm font-semibold text-cream">{{ item.quantity }}</span>
+                        <button type="submit" name="quantity" value="{{ item.quantity|add:1 }}" class="grid h-8 w-8 place-items-center border border-white/15 text-cream/70 transition hover:border-gold hover:text-gold" aria-label="Increase quantity">+</button>
+                    </form>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-semibold text-gold">৳{{ item.subtotal|floatformat:2 }}</span>
+                        <form method="post" action="{% url 'cart:remove' item.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="text-[0.6rem] uppercase tracking-[0.2em] text-cream/45 transition hover:text-red-400">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <aside class="cart-summary self-start border border-white/10 bg-white/[0.03] p-6 lg:sticky lg:top-[88px]">
+            <h2>Order summary</h2>
+            <dl>
+                <div><dt>Subtotal</dt><dd>৳{{ cart.subtotal|floatformat:2 }}</dd></div>
+                <div><dt>Shipping</dt><dd>৳0.00</dd></div>
+                <div class="summary-total"><dt>Total</dt><dd>৳{{ cart.total|floatformat:2 }}</dd></div>
+            </dl>
+            <a href="{% url 'orders:checkout' %}" class="button checkout-button">Proceed to checkout</a>
+            <a href="{% url 'store:shop' %}" class="continue-link">Continue shopping</a>
+            <form method="post" action="{% url 'cart:clear' %}" class="mt-4" data-confirm-submit data-confirm-text="Empty your entire cart?">
+                {% csrf_token %}
+                <button type="submit" class="w-full border border-white/20 px-4 py-2.5 text-[0.6rem] uppercase tracking-[0.25em] text-cream/55 transition hover:border-red-400/60 hover:text-red-300">Clear cart</button>
+            </form>
+        </aside>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,5 @@
+-r requirements.txt
+
+# Local development / CI only - never installed on the shared host.
+pytest>=8.0,<9.0
+pytest-django>=4.9,<5.0

@@ -1,0 +1,1372 @@
+============================================================
+EXPORT ZONE — PHASE 5 MASTER IMPLEMENTATION PROMPT
+CHECKOUT + ORDER + COD + CONFIRMATION + ORDER HISTORY
+============================================================
+
+You are an expert Django 5.2.x full-stack engineer working inside an EXISTING
+Export Zone e-commerce project.
+
+IMPORTANT:
+This is NOT a new project.
+DO NOT recreate the project.
+DO NOT rewrite working Phase 1, Phase 2, Phase 3, or Phase 4 code.
+
+You must inspect the existing project first and extend it safely.
+
+============================================================
+PROJECT CONTEXT
+============================================================
+
+Project:
+Export Zone
+
+Type:
+Premium clothing e-commerce website
+
+Location:
+Meherpur, Bangladesh
+
+Currency:
+BDT (৳)
+
+Frontend:
+Django Templates + Tailwind CSS
+
+JavaScript:
+Alpine.js or Vanilla JS only
+
+Backend:
+Django 5.2.x
+
+Database:
+SQLite development
+PostgreSQL-ready
+
+Authentication:
+Existing custom user model
+Email + phone login
+Email verification
+Password reset
+Remember me
+
+Current completed phases:
+
+PHASE 1:
+- Django foundation
+- settings/config
+- base template
+- responsive dark/gold UI
+- homepage
+
+PHASE 2:
+- Custom User
+- email authentication
+- phone authentication
+- registration
+- email verification
+- login/logout
+- password reset
+- account page
+
+PHASE 3:
+- Category
+- Product
+- ProductImage
+- ProductVariant
+- Product listing
+- Filtering
+- Sorting
+- Pagination
+- Product detail
+- Stock handling
+
+PHASE 4:
+- Cart
+- CartItem
+- Add to cart
+- Update quantity
+- Remove item
+- Empty cart
+- Stock validation
+- Quantity validation
+- Duplicate prevention
+- Cart navbar count
+- CSRF protection
+- Login-required cart
+- Responsive cart UI
+
+IMPORTANT CURRENT STATE:
+
+The previous phases are already tested and working.
+
+Previous full regression:
+63 tests passed.
+
+Do NOT break these existing tests.
+
+============================================================
+PHASE 5 OBJECTIVE
+============================================================
+
+Implement the complete:
+
+CART
+   ↓
+CHECKOUT
+   ↓
+ORDER CREATION
+   ↓
+COD PAYMENT
+   ↓
+ORDER CONFIRMATION
+   ↓
+CUSTOMER ORDER HISTORY
+   ↓
+ORDER DETAIL / TRACKING
+
+Only Cash on Delivery is active.
+
+bKash and Nagad must appear in the UI but remain disabled.
+
+============================================================
+STEP 1 — INSPECT BEFORE CODING
+============================================================
+
+Before changing anything:
+
+1. Inspect:
+   - apps/accounts/
+   - apps/store/
+   - apps/cart/
+   - config/
+   - templates/
+   - static/
+   - settings.py
+   - existing migrations
+   - existing tests
+
+2. Determine the EXACT existing model names and field names.
+
+3. Determine how Cart and CartItem currently work.
+
+4. Determine how ProductVariant is related to Product.
+
+5. Determine the existing user model.
+
+6. Determine the existing URL namespaces.
+
+7. Determine the existing template inheritance structure.
+
+8. Determine whether Order models already exist.
+
+9. Do NOT duplicate models or URLs.
+
+10. Do NOT make assumptions when the existing code can be inspected.
+
+============================================================
+STEP 2 — ORDER DATABASE MODELS
+============================================================
+
+Create/extend the orders app if necessary.
+
+Required models:
+
+Order
+OrderItem
+
+Optional:
+Address
+
+Prefer storing shipping snapshot information directly on Order for this
+version because an order must preserve the exact shipping information used
+when the order was placed.
+
+------------------------------------------------------------
+ORDER
+------------------------------------------------------------
+
+Required fields:
+
+id
+order_number
+user
+status
+payment_method
+total_amount
+shipping_charge
+
+shipping_full_name
+shipping_phone
+shipping_address
+shipping_area
+delivery_note
+
+created_at
+updated_at
+
+Recommended:
+
+estimated_delivery
+cancelled_at
+delivered_at
+
+Use DecimalField for all money values.
+
+Currency is BDT.
+
+------------------------------------------------------------
+ORDER STATUS
+------------------------------------------------------------
+
+Use Django TextChoices.
+
+Allowed statuses:
+
+PENDING
+CONFIRMED
+PROCESSING
+SHIPPED
+DELIVERED
+CANCELLED
+
+Initial status:
+
+PENDING
+
+Allowed workflow:
+
+Pending
+   ↓
+Confirmed
+   ↓
+Processing
+   ↓
+Shipped
+   ↓
+Delivered
+
+Cancelled may be reached from any non-final state according to business
+rules.
+
+Do not allow Delivered → Processing, etc.
+
+Implement server-side status transition validation.
+
+------------------------------------------------------------
+PAYMENT METHOD
+------------------------------------------------------------
+
+For now:
+
+COD = Cash on Delivery
+
+Future placeholders:
+
+BKASH
+NAGAD
+
+But:
+
+BKASH and NAGAD MUST NOT be accepted by the server yet.
+
+Only COD can create an order.
+
+Never trust the frontend payment selection.
+
+Server must validate payment_method == COD.
+
+------------------------------------------------------------
+ORDER NUMBER
+------------------------------------------------------------
+
+Required format:
+
+EZ-YYYYMMDD-XXXX
+
+Example:
+
+EZ-20260923-0042
+
+Requirements:
+
+- unique=True
+- collision-safe
+- transaction-safe
+- never duplicate
+- do not rely only on random numbers without uniqueness handling
+
+Implement a clean utility/service for generation.
+
+============================================================
+ORDER ITEM
+============================================================
+
+Required:
+
+id
+order
+product_variant
+quantity
+price
+
+Important:
+
+The price stored in OrderItem must be a SNAPSHOT of the product/variant
+price at the time of ordering.
+
+Do NOT calculate historical order prices from the current product price.
+
+If the current catalog price changes later, old orders must remain unchanged.
+
+Store price as DecimalField.
+
+Also consider storing product_name / variant information snapshot if useful
+for historical integrity.
+
+Do not unnecessarily duplicate data if existing architecture already supports
+safe historical display.
+
+============================================================
+STEP 3 — CHECKOUT FLOW
+============================================================
+
+Route:
+
+/checkout/
+
+Namespace appropriately.
+
+Checkout requires authentication.
+
+Anonymous users:
+
+redirect to login.
+
+After login:
+
+return them to checkout.
+
+------------------------------------------------------------
+CHECKOUT SECTIONS
+------------------------------------------------------------
+
+A. ORDER SUMMARY
+
+Show:
+
+Product image
+Product name
+Size
+Color
+Unit price
+Quantity
+Line total
+
+Then:
+
+Subtotal
+Shipping
+Total
+
+Shipping:
+
+৳0
+
+Free delivery.
+
+------------------------------------------------------------
+B. DELIVERY INFORMATION
+------------------------------------------------------------
+
+Required:
+
+Full Name
+Phone Number
+Full Address
+Area / Thana
+
+Optional:
+
+Delivery Note
+
+Phone validation:
+
+Bangladesh mobile format:
+
+01XXXXXXXXX
+
+Accept:
+
+01 followed by 9 digits
+
+Normalize/validate safely.
+
+Do not blindly trust frontend validation.
+
+------------------------------------------------------------
+C. DELIVERY OPTION
+------------------------------------------------------------
+
+Home Delivery:
+
+ACTIVE
+Selected by default.
+
+Store Pickup:
+
+Optional.
+
+If Store Pickup is not implemented fully, DO NOT pretend it works.
+
+Either:
+
+1. Implement it completely,
+
+OR
+
+2. Keep it visually unavailable / disabled.
+
+Do not create fake functionality.
+
+------------------------------------------------------------
+D. PAYMENT
+------------------------------------------------------------
+
+COD:
+
+ACTIVE
+SELECTED BY DEFAULT
+
+bKash:
+
+DISABLED
+"Coming Soon"
+
+Nagad:
+
+DISABLED
+"Coming Soon"
+
+Frontend:
+
+disabled attribute
+
+Backend:
+
+reject non-COD payment values.
+
+============================================================
+STEP 4 — ORDER CREATION
+============================================================
+
+This is the most important backend operation.
+
+Use:
+
+transaction.atomic()
+
+Order creation must be atomic.
+
+Flow:
+
+1. Authenticate user.
+2. Get user's cart.
+3. Lock relevant cart items / variants where appropriate.
+4. Verify cart is not empty.
+5. Verify every product is active.
+6. Verify every variant belongs to the selected product.
+7. Verify every quantity > 0.
+8. Verify sufficient stock.
+9. Calculate totals server-side.
+10. Never trust frontend totals.
+11. Validate shipping information.
+12. Validate payment method.
+13. Generate unique order number.
+14. Create Order.
+15. Create OrderItems.
+16. Decrease stock safely.
+17. Clear cart.
+18. Commit transaction.
+19. Send confirmation email after successful commit.
+
+Use transaction.on_commit() where appropriate for email dispatch.
+
+If anything fails:
+
+- rollback order creation
+- rollback stock changes
+- DO NOT clear cart
+- show useful error message
+
+============================================================
+STOCK SAFETY
+============================================================
+
+This must be race-condition aware.
+
+Do not simply:
+
+variant.stock -= quantity
+variant.save()
+
+without considering concurrent orders.
+
+Use:
+
+select_for_update()
+
+inside transaction.atomic() when reserving/decreasing stock.
+
+Example conceptual flow:
+
+transaction.atomic():
+    lock variant
+    verify stock
+    decrease stock
+    create order item
+
+Never allow:
+
+stock < 0
+
+If stock is insufficient:
+
+Do not create the order.
+
+Show a user-friendly message.
+
+============================================================
+CART CLEARING
+============================================================
+
+Cart must only be cleared AFTER successful Order + OrderItems creation
+and stock update.
+
+If order creation fails:
+
+Cart must remain unchanged.
+
+============================================================
+STEP 5 — ORDER CONFIRMATION
+============================================================
+
+After successful order:
+
+redirect to:
+
+/orders/<order_number>/confirmation/
+
+or equivalent namespaced URL.
+
+Confirmation page must show:
+
+Thank You message
+
+Order Number
+
+Example:
+
+EZ-20260923-0042
+
+Order status:
+
+Pending
+
+Payment:
+
+Cash on Delivery
+
+Subtotal
+
+Shipping
+
+Total
+
+Shipping information
+
+Ordered products
+
+Estimated delivery
+
+Buttons:
+
+Track Order
+Continue Shopping
+
+Add Copy Order Number button.
+
+Use Alpine.js or vanilla JS for copy.
+
+============================================================
+STEP 6 — CUSTOMER ORDER HISTORY
+============================================================
+
+Create:
+
+/orders/
+/orders/<order_number>/
+
+Customer can see ONLY their own orders.
+
+Never allow:
+
+/orders/123/
+
+to expose another customer's order.
+
+Use:
+
+get_object_or_404(
+    Order.objects.filter(user=request.user),
+    ...
+)
+
+or equivalent secure queryset filtering.
+
+------------------------------------------------------------
+ORDER LIST
+------------------------------------------------------------
+
+Show:
+
+Order Number
+Date
+Items count
+Total
+Payment
+Status
+View Details
+
+Sort newest first.
+
+Add pagination if appropriate.
+
+------------------------------------------------------------
+ORDER DETAIL
+------------------------------------------------------------
+
+Show:
+
+Order number
+Order date
+Status
+Payment method
+Products
+Quantity
+Price
+Subtotal
+Shipping
+Total
+
+Shipping information:
+
+Name
+Phone
+Address
+Area
+
+Delivery note if present.
+
+============================================================
+STEP 7 — ORDER STATUS TRACKING UI
+============================================================
+
+Create a premium visual tracking component.
+
+Timeline:
+
+Pending
+   ↓
+Confirmed
+   ↓
+Processing
+   ↓
+Shipped
+   ↓
+Delivered
+
+If Cancelled:
+
+show a separate cancelled state.
+
+Do not fake status progression.
+
+Display the actual database status.
+
+Use dark premium Export Zone styling.
+
+============================================================
+STEP 8 — EMAIL
+============================================================
+
+Existing authentication email system must remain intact.
+
+Add:
+
+ORDER CONFIRMATION EMAIL
+
+Send only after successful transaction.
+
+Do not allow email failure to rollback a successful order.
+
+Use try/except around email sending.
+
+Prefer:
+
+transaction.on_commit()
+
+Email should contain:
+
+Subject:
+Export Zone — Order Confirmation #EZ-...
+
+Body:
+
+Hello <customer name>,
+
+Thank you for shopping with Export Zone.
+
+Your order has been successfully placed.
+
+Order Number
+Order Date
+Payment Method: Cash on Delivery
+Total Amount
+Delivery Address
+
+Product summary
+
+Estimated delivery
+
+Track Order button/link
+
+Beautiful responsive HTML email.
+
+Also provide plain-text fallback.
+
+============================================================
+STEP 9 — ADMIN
+============================================================
+
+Customize Django Admin for Orders.
+
+Order admin should show:
+
+order_number
+user
+status
+payment_method
+total_amount
+created_at
+
+Search:
+
+order_number
+user email
+phone
+
+Filters:
+
+status
+payment_method
+created_at
+
+Readonly:
+
+order_number
+created_at
+updated_at
+
+Inline OrderItems.
+
+Admin should NOT be able to create invalid payment methods.
+
+Add safe status update behavior.
+
+If custom admin dashboard already exists, integrate instead of replacing it.
+
+============================================================
+STEP 10 — SECURITY
+============================================================
+
+Must enforce:
+
+@login_required
+
+CSRF protection
+
+POST-only mutation actions
+
+User ownership validation
+
+Server-side total calculation
+
+Server-side stock validation
+
+Server-side payment validation
+
+No price trust from frontend
+
+No quantity trust from frontend
+
+No user_id from frontend
+
+No order ownership bypass
+
+No IDOR vulnerabilities
+
+Do not expose sensitive information in error messages.
+
+============================================================
+STEP 11 — PERFORMANCE
+============================================================
+
+Use:
+
+select_related()
+
+prefetch_related()
+
+where appropriate.
+
+Avoid N+1 queries.
+
+Examples:
+
+Order → user
+
+OrderItem → product_variant → product
+
+Checkout should not execute unnecessary repeated queries.
+
+============================================================
+STEP 12 — UI DESIGN
+============================================================
+
+Follow existing Export Zone design.
+
+Theme:
+
+Dark premium luxury clothing.
+
+Background:
+
+#0B0B0B
+#111827
+
+Gold:
+
+#D4AF37
+#F59E0B
+
+Use existing CSS variables/classes if already created.
+
+Do NOT introduce a second design system.
+
+Do NOT destroy Phase 1 UI.
+
+Responsive:
+
+Mobile
+Tablet
+Desktop
+
+Mobile checkout should be especially clean.
+
+============================================================
+CHECKOUT MOBILE LAYOUT
+============================================================
+
+Recommended:
+
+Order Summary
+↓
+Delivery Information
+↓
+Delivery Option
+↓
+Payment Method
+↓
+Total
+↓
+PLACE ORDER
+
+Sticky bottom CTA may be used on mobile.
+
+Button:
+
+PLACE ORDER • ৳TOTAL
+
+COD card:
+
+ACTIVE
+
+bKash/Nagad:
+
+opacity reduced
+disabled
+Coming Soon badge
+
+============================================================
+STEP 13 — TEMPLATES
+============================================================
+
+Create at minimum:
+
+templates/orders/checkout.html
+templates/orders/order_confirmation.html
+templates/orders/order_list.html
+templates/orders/order_detail.html
+
+If needed:
+
+templates/orders/emails/order_confirmation.html
+templates/orders/emails/order_confirmation.txt
+
+Reuse:
+
+base.html
+
+Existing components should be reused.
+
+============================================================
+STEP 14 — FORMS
+============================================================
+
+Create:
+
+CheckoutForm
+
+Use Django Forms.
+
+Fields:
+
+full_name
+phone
+address
+area
+delivery_note
+payment_method
+delivery_option
+
+Validation:
+
+- required fields
+- phone format
+- payment method
+- valid delivery option
+- length limits
+- whitespace handling
+
+Do not put business-critical stock/order logic only inside the form.
+
+Business logic belongs in service/view layer.
+
+============================================================
+STEP 15 — SERVICE LAYER
+============================================================
+
+Prefer a service layer.
+
+For example:
+
+apps/orders/services.py
+
+Possible functions:
+
+create_order_from_cart(...)
+generate_order_number(...)
+calculate_cart_totals(...)
+validate_stock(...)
+send_order_confirmation_email(...)
+
+Keep views thin.
+
+Do not put 200+ lines of order logic inside views.py.
+
+============================================================
+STEP 16 — URLS
+============================================================
+
+Use proper namespace.
+
+Example:
+
+app_name = "orders"
+
+Routes:
+
+checkout/
+confirmation/<str:order_number>/
+orders/
+orders/<str:order_number>/
+
+Use named URLs everywhere.
+
+Never hardcode URLs inside templates when reverse() / {% url %} can be used.
+
+============================================================
+STEP 17 — MESSAGES
+============================================================
+
+Use Django messages.
+
+Examples:
+
+Order successfully placed.
+
+Your cart is empty.
+
+Insufficient stock for <product>.
+
+This product is no longer available.
+
+Invalid payment method.
+
+Your order could not be completed. Please try again.
+
+============================================================
+STEP 18 — TESTS
+============================================================
+
+This is mandatory.
+
+Create comprehensive tests.
+
+Minimum tests:
+
+1. Anonymous user redirected from checkout.
+
+2. Logged-in user with empty cart cannot checkout.
+
+3. Checkout page loads correctly.
+
+4. COD is selected by default.
+
+5. bKash cannot create order.
+
+6. Nagad cannot create order.
+
+7. Invalid phone rejected.
+
+8. Missing address rejected.
+
+9. Missing area rejected.
+
+10. Order created successfully.
+
+11. Order number generated correctly.
+
+12. Order status defaults to Pending.
+
+13. Correct total calculated.
+
+14. Shipping = 0.
+
+15. Cart cleared after successful order.
+
+16. Stock decreases correctly.
+
+17. Stock never becomes negative.
+
+18. Insufficient stock prevents order.
+
+19. Product inactive prevents order.
+
+20. Variant mismatch prevents order.
+
+21. OrderItem price snapshot works.
+
+22. Customer can see own orders.
+
+23. Customer cannot see another user's order.
+
+24. Order confirmation page works.
+
+25. Confirmation email triggered after successful order.
+
+26. Email failure does not cancel successful order.
+
+27. CSRF protection works.
+
+28. POST required for order creation.
+
+29. Duplicate order number is handled.
+
+30. Status transition rules work.
+
+31. Cancelled order displays correctly.
+
+32. Existing Phase 1 tests still pass.
+
+33. Existing Phase 2 tests still pass.
+
+34. Existing Phase 3 tests still pass.
+
+35. Existing Phase 4 tests still pass.
+
+============================================================
+STEP 19 — MIGRATIONS
+============================================================
+
+After model changes:
+
+Run:
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+Then:
+
+python manage.py makemigrations --check --dry-run
+
+There must be NO migration drift.
+
+Never edit migration files manually unless absolutely necessary.
+
+============================================================
+STEP 20 — VALIDATION
+============================================================
+
+Run:
+
+python manage.py check
+
+python manage.py makemigrations --check --dry-run
+
+python manage.py migrate
+
+python manage.py test
+
+All tests must pass.
+
+Do not claim success if tests are failing.
+
+============================================================
+IMPORTANT WINDOWS ENVIRONMENT
+============================================================
+
+This project is located on Windows.
+
+The project uses:
+
+.venv\Scripts\python.exe
+
+Prefer running:
+
+.\.venv\Scripts\python.exe manage.py check
+
+.\.venv\Scripts\python.exe manage.py test
+
+instead of relying on global Python.
+
+Project path may contain spaces and special characters.
+
+Do not assume Linux paths.
+
+============================================================
+IMPORTANT ERROR-HANDLING RULE
+============================================================
+
+If a test fails:
+
+DO NOT simply report the failure.
+
+Inspect:
+
+- traceback
+- model relationship
+- URL
+- template
+- form
+- migration
+- test assumptions
+
+Find the ROOT CAUSE.
+
+Fix it.
+
+Run the test again.
+
+Continue until the implementation is actually green.
+
+============================================================
+IMPORTANT EXISTING-CODE RULE
+============================================================
+
+Before modifying an existing file:
+
+READ IT FIRST.
+
+Do not overwrite files blindly.
+
+Do not replace working code unnecessarily.
+
+Do not create duplicate:
+
+models
+URLs
+templates
+namespaces
+context processors
+authentication backends
+settings
+
+Reuse existing architecture.
+
+============================================================
+IMPORTANT PHASE PRESERVATION RULE
+============================================================
+
+After Phase 5:
+
+These must continue working:
+
+HOME
+AUTHENTICATION
+REGISTRATION
+EMAIL VERIFICATION
+LOGIN
+PHONE LOGIN
+PASSWORD RESET
+PRODUCT LIST
+PRODUCT FILTERS
+PRODUCT DETAIL
+CART
+ADD TO CART
+UPDATE CART
+REMOVE CART
+STOCK VALIDATION
+
+Do not regress any existing feature.
+
+============================================================
+IMPLEMENTATION ORDER
+============================================================
+
+Follow this exact order:
+
+PHASE 5.1
+Inspect existing project.
+
+PHASE 5.2
+Create/extend Order + OrderItem models.
+
+PHASE 5.3
+Create migrations.
+
+PHASE 5.4
+Create CheckoutForm.
+
+PHASE 5.5
+Create order service layer.
+
+PHASE 5.6
+Implement secure checkout view.
+
+PHASE 5.7
+Implement atomic order creation.
+
+PHASE 5.8
+Implement stock locking.
+
+PHASE 5.9
+Implement cart clearing.
+
+PHASE 5.10
+Implement confirmation page.
+
+PHASE 5.11
+Implement customer order history.
+
+PHASE 5.12
+Implement order detail/tracking.
+
+PHASE 5.13
+Implement order confirmation email.
+
+PHASE 5.14
+Implement admin integration.
+
+PHASE 5.15
+Implement tests.
+
+PHASE 5.16
+Run full regression.
+
+============================================================
+FINAL REPORT
+============================================================
+
+At the end, report:
+
+1. Files created
+2. Files modified
+3. Database models added/changed
+4. URLs added
+5. Features implemented
+6. Security protections
+7. Email behavior
+8. Stock handling
+9. Tests added
+10. Exact test result
+11. Django check result
+12. Migration check result
+13. Any warnings
+14. Any remaining TODOs
+
+Use this format:
+
+============================================================
+PHASE 5 COMPLETE
+============================================================
+
+Status:
+SUCCESS / BLOCKED
+
+Tests:
+X passed, Y failed
+
+Django Check:
+PASS / FAIL
+
+Migration Check:
+PASS / FAIL
+
+Implemented:
+- ...
+- ...
+- ...
+
+Remaining:
+- ...
+
+IMPORTANT:
+Do not say "production-ready" unless the relevant tests actually pass.
+
+============================================================
+START NOW
+============================================================
+
+First inspect the existing project.
+
+Do NOT immediately start writing code.
+
+First provide a short audit:
+
+- Existing apps
+- Existing Order-related models
+- Existing Cart models
+- Existing User model
+- Existing URL namespaces
+- Existing template structure
+- Potential conflicts
+
+Then implement Phase 5 step-by-step.
+
+Do not ask me to manually provide files that you can inspect from the workspace.
+
+Do not stop after creating files.
+
+Run tests and fix errors before declaring Phase 5 complete.

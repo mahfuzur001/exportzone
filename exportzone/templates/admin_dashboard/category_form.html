@@ -1,0 +1,1 @@
+{% extends "admin_dashboard/base.html" %}{% block heading %}Category{% endblock %}{% block content %}<section class="admin-panel admin-form-narrow"><form method="post" enctype="multipart/form-data">{% csrf_token %}{{ form.as_p }}<button class="button button-gold" type="submit">Save category</button></form></section>{% endblock %}

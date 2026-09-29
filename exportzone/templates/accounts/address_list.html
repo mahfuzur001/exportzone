@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="Address book | Export Zone" %}{% seo_meta %}{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-5xl px-4 py-14 lg:px-6">
+    <nav class="mb-6 text-[0.6rem] uppercase tracking-[0.3em] text-cream/45" aria-label="Breadcrumb">
+        <a href="{% url 'store:home' %}" class="transition hover:text-gold">Home</a> &nbsp;/&nbsp;
+        <a href="{% url 'accounts:account' %}" class="transition hover:text-gold">Account</a> &nbsp;/&nbsp; <span class="text-gold">Addresses</span>
+    </nav>
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-3 border-b border-white/10 pb-6">
+        <div>
+            <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">Delivery book</p>
+            <h1 class="mt-2 font-heading text-3xl text-cream">Saved addresses</h1>
+        </div>
+        <a href="{% url 'accounts:address_add' %}" class="border border-gold bg-gradient-to-r from-[#ba8428] via-gold to-[#b67e25] px-6 py-3 text-[0.6rem] font-bold uppercase tracking-[0.3em] text-ink transition hover:brightness-110">Add address</a>
+    </div>
+
+    {% if addresses %}
+    <ul class="grid gap-4 sm:grid-cols-2">
+        {% for address in addresses %}
+        <li class="flex flex-col border border-white/10 bg-white/[0.03] p-5 {% if address.is_default %}border-gold/40{% endif %}">
+            <div class="flex-1">
+                <p class="font-heading text-cream">
+                    {{ address.full_name }}
+                    {% if address.is_default %}<span class="ml-2 border border-gold/50 px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.2em] text-gold">Default</span>{% endif %}
+                </p>
+                <p class="mt-1 text-xs tracking-[0.1em] text-cream/50">{{ address.phone }}</p>
+                <p class="mt-2 text-sm leading-relaxed text-cream/70">{{ address.address }}, {{ address.area }}</p>
+            </div>
+            <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-white/10 pt-4 text-[0.6rem] uppercase tracking-[0.2em]">
+                <a href="{% url 'accounts:address_edit' address.pk %}" class="text-cream/60 transition hover:text-gold">Edit</a>
+                {% if not address.is_default %}
+                <form method="post" action="{% url 'accounts:address_set_default' address.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="text-cream/60 transition hover:text-gold">Set default</button>
+                </form>
+                {% endif %}
+                <form method="post" action="{% url 'accounts:address_delete' address.pk %}" data-confirm-submit data-confirm-text="Remove this address?">
+                    {% csrf_token %}
+                    <button type="submit" class="text-cream/50 transition hover:text-red-400">Delete</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="border border-dashed border-white/20 bg-white/[0.03] px-6 py-14 text-center">
+        <h2 class="font-heading text-xl text-gold">No saved addresses</h2>
+        <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-cream/55">Save a delivery address once and reuse it at checkout.</p>
+        <a href="{% url 'accounts:address_add' %}" class="mt-6 inline-block border border-gold bg-gradient-to-r from-[#ba8428] via-gold to-[#b67e25] px-7 py-3 text-[0.62rem] font-bold uppercase tracking-[0.3em] text-ink transition hover:brightness-110">Add your first address</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% load static %}{% load seo_tags %}
+<!doctype html>
+<html lang="{{ seo_language|default:'en' }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block seo_head %}{% seo_meta noindex=True %}{% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { ink: '#08090c', charcoal: '#111218', gold: '#d4af37', 'pale-gold': '#f59e0b', cream: '#f7f2e7' },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], heading: ['"Playfair Display"', 'Georgia', 'serif'] }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body class="min-h-screen bg-ink text-cream font-sans antialiased">
+<div class="flex min-h-screen flex-col lg:flex-row">
+    <aside class="admin-sidebar sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-charcoal lg:flex">
+        <a href="{% url 'store:home' %}" class="flex items-center gap-3 border-b border-white/10 px-5 py-5">
+            <span class="grid h-9 w-9 place-items-center rounded-full border border-gold/70 text-gold text-sm" aria-hidden="true">&#9670;</span>
+            <span>
+                <strong class="block font-heading text-sm tracking-[0.18em] text-cream">EXPORT ZONE</strong>
+                <small class="text-[0.5rem] uppercase tracking-[0.35em] text-gold/80">Admin console</small>
+            </span>
+        </a>
+        <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-5 text-[0.72rem] uppercase tracking-[0.14em]" aria-label="Admin navigation">
+            <a href="{% url 'admin_dashboard:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %} border-l-2 border-transparent px-3 py-2.5 text-cream/70 transition hover:border-gold/60 hover:text-gold">
+                <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"/></svg>
+                Dashboard
+            </a>
+            <a href="{% url 'admin_dashboard:orders' %}" class="{% if request.resolver_match.url_name == 'orders' or request.resolver_match.url_name == 'order_detail' %}active{% endif %} border-l-2 border-transparent px-3 py-2.5 text-cream/70 transition hover:border-gold/60 hover:text-gold">Orders</a>
+            <a href="{% url 'admin_dashboard:products' %}" class="{% if request.resolver_match.url_name == 'products' or request.resolver_match.url_name == 'product_add' or request.resolver_match.url_name == 'product_edit' %}active{% endif %} border-l-2 border-transparent px-3 py-2.5 text-cream/70 transition hover:border-gold/60 hover:text-gold">Products</a>
+            <a href="{% url 'admin_dashboard:categories' %}" class="{% if request.resolver_match.url_name == 'categories' or request.resolver_match.url_name == 'category_add' or request.resolver_match.url_name == 'category_edit' %}active{% endif %} border-l-2 border-transparent px-3 py-2.5 text-cream/70 transition hover:border-gold/60 hover:text-gold">Categories</a>
+            <a href="{% url 'admin_dashboard:customers' %}" class="{% if request.resolver_match.url_name == 'customers' or request.resolver_match.url_name == 'customer_detail' %}active{% endif %} border-l-2 border-transparent px-3 py-2.5 text-cream/70 transition hover:border-gold/60 hover:text-gold">Customers</a>
+            <a href="{% url 'admin_dashboard:low_stock' %}" class="{% if request.resolver_match.url_name == 'low_stock' %}active{% endif %} border-l-2 border-transparent px-3 py-2.5 text-cream/70 transition hover:border-gold/60 hover:text-gold">Low stock</a>
+        </nav>
+        <div class="border-t border-white/10 px-5 py-4">
+            <a href="{% url 'store:shop' %}" class="text-[0.62rem] uppercase tracking-[0.25em] text-gold/80 transition hover:text-gold">&larr; Back to store</a>
+        </div>
+    </aside>
+    <div class="flex min-w-0 flex-1 flex-col">
+        <header class="admin-topbar sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-ink/95 px-5 py-4 backdrop-blur">
+            <div class="flex items-center gap-4">
+                <span class="grid h-9 w-9 place-items-center rounded-full border border-gold/60 text-gold lg:hidden" aria-hidden="true">&#9670;</span>
+                <h1 class="font-heading text-xl text-cream md:text-2xl">{% block heading %}Dashboard{% endblock %}</h1>
+            </div>
+            <div class="admin-user">
+                <span class="admin-user-meta hidden text-right sm:block">
+                    <strong>{{ user.full_name|default:"Administrator" }}</strong>
+                    <small>Store admin</small>
+                </span>
+                <span class="admin-avatar" aria-hidden="true">{{ user.full_name|default:"Ez"|slice:":1"|upper }}</span>
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="border border-white/15 px-3 py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-cream/70 transition hover:border-gold hover:text-gold">Sign out</button>
+                </form>
+            </div>
+        </header>
+
+        <nav class="flex gap-1 overflow-x-auto border-b border-white/10 bg-charcoal px-4 py-2 text-[0.6rem] uppercase tracking-[0.16em] lg:hidden" aria-label="Admin sections">
+            <a href="{% url 'admin_dashboard:dashboard' %}" class="whitespace-nowrap px-2.5 py-1.5 text-cream/70">Dashboard</a>
+            <a href="{% url 'admin_dashboard:orders' %}" class="whitespace-nowrap px-2.5 py-1.5 text-cream/70">Orders</a>
+            <a href="{% url 'admin_dashboard:products' %}" class="whitespace-nowrap px-2.5 py-1.5 text-cream/70">Products</a>
+            <a href="{% url 'admin_dashboard:categories' %}" class="whitespace-nowrap px-2.5 py-1.5 text-cream/70">Categories</a>
+            <a href="{% url 'admin_dashboard:customers' %}" class="whitespace-nowrap px-2.5 py-1.5 text-cream/70">Customers</a>
+            <a href="{% url 'admin_dashboard:low_stock' %}" class="whitespace-nowrap px-2.5 py-1.5 text-cream/70">Low stock</a>
+        </nav>
+
+        {% if messages %}
+        <div class="space-y-2 px-5 pt-4" role="alert">
+            {% for message in messages %}
+            <div class="border px-4 py-2.5 text-sm {% if 'error' in message.tags %}border-red-400/60 bg-red-950/80 text-red-100{% elif 'success' in message.tags %}border-gold/60 bg-gold/10 text-gold{% else %}border-white/20 bg-white/[0.04] text-cream{% endif %}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <main class="flex-1 p-5 lg:p-7">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="border-t border-white/10 px-5 py-4 text-[0.6rem] uppercase tracking-[0.25em] text-cream/40">
+            Export Zone admin &middot; Meherpur, Bangladesh
+        </footer>
+    </div>
+</div>
+<script src="{% static 'js/site.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load seo_tags %}
+{% block seo_head %}{% push_seo title=form_title %}{% seo_meta %}{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-2xl px-4 py-14 lg:px-6">
+    <nav class="mb-6 text-[0.6rem] uppercase tracking-[0.3em] text-cream/45" aria-label="Breadcrumb">
+        <a href="{% url 'store:home' %}" class="transition hover:text-gold">Home</a> &nbsp;/&nbsp;
+        <a href="{% url 'accounts:account' %}" class="transition hover:text-gold">Account</a> &nbsp;/&nbsp;
+        <a href="{% url 'accounts:address_list' %}" class="transition hover:text-gold">Addresses</a> &nbsp;/&nbsp; <span class="text-gold">{{ form_title }}</span>
+    </nav>
+    <div class="mb-8 border-b border-white/10 pb-6">
+        <p class="text-[0.58rem] uppercase tracking-[0.4em] text-gold/80">Delivery book</p>
+        <h1 class="mt-2 font-heading text-3xl text-cream">{{ form_title }}</h1>
+    </div>
+
+    <form method="post" class="space-y-5 border border-white/10 bg-white/[0.03] p-6">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% for field in form %}
+        <div class="form-field {% if field.errors %}has-error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="help-text">{{ field.help_text }}</p>{% endif %}
+            {% for error in field.errors %}<p class="field-errors">{{ error }}</p>{% endfor %}
+        </div>
+        {% endfor %}
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+            <button type="submit" class="border border-gold bg-gradient-to-r from-[#ba8428] via-gold to-[#b67e25] px-7 py-3 text-[0.62rem] font-bold uppercase tracking-[0.3em] text-ink transition hover:brightness-110">{{ submit_label }}</button>
+            <a href="{% url 'accounts:address_list' %}" class="text-[0.62rem] uppercase tracking-[0.25em] text-cream/50 transition hover:text-gold">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

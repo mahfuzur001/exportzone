@@ -1,0 +1,33 @@
+{% comment %}Shared product card used by home featured/new-arrivals grids and the shop grid.{% endcomment %}
+<article class="group flex flex-col overflow-hidden border border-white/10 bg-white/[0.03] transition hover:border-gold/50">
+    <a href="{% url 'store:product_detail' product.slug %}" class="relative block aspect-[4/5] overflow-hidden bg-gradient-to-br from-white/[0.07] via-ink to-gold/10">
+        {% if product.featured %}
+        <span class="absolute left-3 top-3 z-10 border border-gold/60 bg-ink/85 px-2 py-1 text-[0.5rem] font-bold uppercase tracking-[0.22em] text-gold">Featured</span>
+        {% endif %}
+        {% if product.primary_image %}
+        <img src="{{ product.primary_image.image.url }}" alt="{{ product.name }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+        {% else %}
+        <span class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
+            <span class="font-heading text-lg uppercase tracking-[0.3em] text-cream/75">Export <span class="text-gold">Zone</span></span>
+            <span class="text-[0.52rem] uppercase tracking-[0.38em] text-cream/40">{{ product.category.name }}</span>
+        </span>
+        {% endif %}
+        <span class="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-ink via-ink/85 to-transparent py-3 text-center text-[0.55rem] font-bold uppercase tracking-[0.3em] text-gold transition duration-300 group-hover:translate-y-0">View product</span>
+    </a>
+    <div class="flex flex-1 flex-col gap-1.5 p-4">
+        <span class="text-[0.52rem] uppercase tracking-[0.32em] text-cream/45">{{ product.category.name }}</span>
+        <h3 class="font-heading text-base leading-snug text-cream">
+            <a href="{% url 'store:product_detail' product.slug %}" class="transition hover:text-gold">{{ product.name }}</a>
+        </h3>
+        <div class="mt-auto flex items-center justify-between gap-2 pt-2.5">
+            <span class="text-sm font-semibold text-gold">৳{{ product.base_price|floatformat:2 }}</span>
+            <span class="flex items-center gap-1">
+                {% for variant in product.variants.all %}
+                {% if forloop.counter0 < 4 %}
+                <span class="swatch {{ variant.color|lower }}" title="{{ variant.size }} {{ variant.color }}"></span>
+                {% endif %}
+                {% endfor %}
+            </span>
+        </div>
+    </div>
+</article>

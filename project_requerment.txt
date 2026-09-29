@@ -1,0 +1,3037 @@
+============================================================
+                 EXPORT ZONE
+       PREMIUM CLOTHING E-COMMERCE
+============================================================
+
+You are a Senior Django Full-Stack Engineer, Software Architect,
+Database Designer, UI/UX Engineer, QA Engineer, and Security Engineer.
+
+Your job is to build a complete, production-quality clothing
+e-commerce website called:
+
+                    "EXPORT ZONE"
+
+You must develop the project carefully, phase-by-phase.
+
+IMPORTANT:
+DO NOT blindly generate the entire project in one response.
+
+You must BUILD → RUN → TEST → DEBUG → FIX → VERIFY → CONTINUE.
+
+Never move to the next phase while the current phase contains
+known blocking errors.
+
+============================================================
+1. PROJECT OVERVIEW
+============================================================
+
+Brand:
+EXPORT ZONE
+
+Tagline:
+Premium Quality. Premium You.
+
+Business:
+Premium Clothing E-commerce
+
+Location:
+Meherpur, Bangladesh
+
+Currency:
+BDT (৳)
+
+Main Products:
+- Jeans
+- Shirts
+- Polo T-Shirts
+- Formal Shirts
+- T-Shirts
+- Hoodies
+- Outerwear
+- Accessories
+
+Main Payment Method:
+Cash on Delivery (COD)
+
+Current Payment Status:
+
+COD       → ACTIVE
+bKash     → DISABLED / COMING SOON
+Nagad     → DISABLED / COMING SOON
+
+Guest Checkout:
+NOT SUPPORTED
+
+User must login/register before placing an order.
+
+============================================================
+2. DESIGN REFERENCES
+============================================================
+
+The user has provided multiple reference images for this project.
+
+Use those uploaded images as the primary visual references for:
+
+1. Database ERD
+2. Cart + Checkout
+3. Admin Dashboard
+4. Product Detail Page
+5. Product Listing Page
+6. Mobile Home Page
+7. Desktop Home Page
+
+The final website should follow the same visual direction.
+
+Design style:
+
+- Premium
+- Luxury fashion
+- Modern
+- Minimal
+- Dark
+- Elegant
+- Professional
+- Responsive
+
+Do NOT copy the images literally.
+
+Use them as UI/UX references.
+
+All dynamic information must come from the Django database.
+
+Do NOT hard-code:
+
+- Product names
+- Product prices
+- Product stock
+- Cart count
+- Order count
+- Revenue
+- Customer information
+- Order information
+
+============================================================
+3. TECHNOLOGY STACK — STRICT
+============================================================
+
+Backend:
+
+- Python 3.12+
+- Django 5.x
+- Django ORM
+- Django Templates
+- Django Forms
+- PostgreSQL-ready
+- SQLite for development
+- Pillow
+- python-dotenv
+- Django Messages Framework
+- Django Email System
+
+Frontend:
+
+- Django Templates
+- Tailwind CSS
+- Alpine.js OR Vanilla JavaScript
+
+Do NOT use:
+
+- React
+- Vue
+- Angular
+- Next.js
+- REST API
+- GraphQL
+- Redux
+
+This is a server-rendered Django application.
+
+Authentication:
+
+- Custom User Model
+- Email login
+- Phone login
+- Password authentication
+- Email verification
+- Password reset
+
+Email:
+
+- Django email backend
+- Console backend for development
+- SMTP-ready for production
+
+Image:
+
+- Pillow
+- Django ImageField
+
+Testing:
+
+- Django TestCase and/or pytest
+- pytest-django if useful
+
+============================================================
+4. IMPORTANT ARCHITECTURE RULE
+============================================================
+
+This is a Django Template based monolithic e-commerce application.
+
+Keep the architecture clean and maintainable.
+
+Do NOT unnecessarily introduce:
+
+- Microservices
+- REST APIs
+- React
+- WebSockets
+- Celery
+- Redis
+- Docker
+- GraphQL
+- complicated third-party systems
+
+unless there is a real requirement.
+
+Prefer Django's built-in features.
+
+============================================================
+5. PROJECT STRUCTURE
+============================================================
+
+Use this architecture:
+
+exportzone/
+│
+├── manage.py
+│
+├── config/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
+│
+├── apps/
+│   ├── __init__.py
+│   │
+│   ├── accounts/
+│   │   ├── migrations/
+│   │   ├── templates/accounts/
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── forms.py
+│   │   ├── models.py
+│   │   ├── urls.py
+│   │   ├── views.py
+│   │   └── utils.py
+│   │
+│   ├── store/
+│   │   ├── migrations/
+│   │   ├── templates/store/
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── forms.py
+│   │   ├── models.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   │
+│   ├── cart/
+│   │   ├── migrations/
+│   │   ├── templates/cart/
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── urls.py
+│   │   ├── views.py
+│   │   └── services.py
+│   │
+│   ├── orders/
+│   │   ├── migrations/
+│   │   ├── templates/orders/
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── forms.py
+│   │   ├── models.py
+│   │   ├── urls.py
+│   │   ├── views.py
+│   │   └── services.py
+│   │
+│   └── core/
+│       ├── templates/core/
+│       ├── apps.py
+│       ├── urls.py
+│       └── views.py
+│
+├── templates/
+│   ├── base.html
+│   ├── components/
+│   ├── emails/
+│   └── includes/
+│
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── media/
+│
+├── tests/
+│
+├── requirements.txt
+├── .env.example
+├── .gitignore
+└── README.md
+
+You may slightly improve this structure if technically necessary,
+but DO NOT change the architecture without explaining why.
+
+============================================================
+6. DEVELOPMENT PHASES
+============================================================
+
+Build the project in exactly this general order:
+
+PHASE 1
+Project Setup + Configuration
+
+PHASE 2
+Custom User + Authentication
+
+PHASE 3
+Email Verification + Password Reset
+
+PHASE 4
+Category + Product + Variant + Images
+
+PHASE 5
+Home + Shop + Product Listing
+
+PHASE 6
+Product Detail
+
+PHASE 7
+Cart
+
+PHASE 8
+Address + Checkout
+
+PHASE 9
+Order + COD
+
+PHASE 10
+Order Confirmation Email
+
+PHASE 11
+Customer Account + My Orders
+
+PHASE 12
+Admin Dashboard
+
+PHASE 13
+Admin Order Management
+
+PHASE 14
+Testing + Security + Optimization
+
+PHASE 15
+Responsive UI + Final Polish
+
+PHASE 16
+Final QA + Documentation
+
+IMPORTANT:
+
+After EVERY phase:
+
+1. Run migrations.
+2. Run the development server.
+3. Run tests.
+4. Check URLs.
+5. Check templates.
+6. Check database relationships.
+7. Fix errors.
+8. Verify the feature manually.
+9. Only then continue.
+
+============================================================
+7. PHASE 1 — PROJECT SETUP
+============================================================
+
+Create the Django project.
+
+Configure:
+
+- SECRET_KEY
+- DEBUG
+- ALLOWED_HOSTS
+- INSTALLED_APPS
+- MIDDLEWARE
+- TEMPLATES
+- STATIC
+- MEDIA
+- DATABASE
+- EMAIL
+- LOGIN_URL
+- LOGIN_REDIRECT_URL
+- LOGOUT_REDIRECT_URL
+
+Use environment variables.
+
+Create:
+
+.env.example
+
+Never hard-code secrets.
+
+Development database:
+
+SQLite
+
+Structure must remain PostgreSQL-ready.
+
+============================================================
+8. PHASE 2 — CUSTOM USER
+============================================================
+
+Create a custom user model.
+
+Fields:
+
+id
+email
+phone
+full_name
+is_active
+is_staff
+is_superuser
+date_joined
+created_at
+updated_at
+
+Requirements:
+
+- email unique
+- email is USERNAME_FIELD
+- phone supported
+- password securely hashed
+- custom UserManager
+- REQUIRED_FIELDS configured correctly
+
+Use:
+
+AUTH_USER_MODEL = "accounts.CustomUser"
+
+IMPORTANT:
+
+Always use:
+
+from django.contrib.auth import get_user_model
+
+for references to the user model.
+
+Do NOT directly import User model from another app.
+
+============================================================
+9. AUTHENTICATION
+============================================================
+
+Implement:
+
+SIGN UP
+
+Fields:
+
+- Full Name
+- Email
+- Phone
+- Password
+- Confirm Password
+
+LOGIN:
+
+User can login using:
+
+- Email
+OR
+- Phone
+
+Password:
+
+Required.
+
+Remember Me:
+
+If checked:
+
+Longer session.
+
+If unchecked:
+
+Normal session expiry.
+
+Logout:
+
+Securely logout the user.
+
+Protect private pages using:
+
+@login_required
+
+or appropriate class-based authentication.
+
+============================================================
+10. EMAIL VERIFICATION
+============================================================
+
+New users should initially have:
+
+is_active = False
+
+After registration:
+
+Send verification email.
+
+Verification URL should contain a secure signed/tokenized value.
+
+Do NOT expose passwords.
+
+Verification link should expire or use a secure token system.
+
+After successful verification:
+
+is_active = True
+
+Show:
+
+"Your account has been verified successfully."
+
+If token is invalid/expired:
+
+Show proper error message.
+
+Do not crash.
+
+============================================================
+11. PASSWORD RESET
+============================================================
+
+Implement:
+
+Forgot Password
+
+User enters email.
+
+Always return a generic response so the system does not reveal
+whether an email exists.
+
+Send password reset email if account exists.
+
+Reset link must be secure and expire.
+
+Implement:
+
+- Forgot Password
+- Reset Password
+- Password validation
+- Success message
+- Invalid/expired token handling
+
+============================================================
+12. EMAIL SYSTEM
+============================================================
+
+Create reusable email utilities.
+
+Development:
+
+EMAIL_BACKEND =
+django.core.mail.backends.console.EmailBackend
+
+Production:
+
+SMTP via environment variables.
+
+Email templates must be HTML.
+
+Brand style:
+
+Dark
+Gold
+Premium
+Elegant
+
+Email types:
+
+1. Account Verification
+2. Password Reset
+3. Order Confirmation
+
+Email layout:
+
+EXPORT ZONE
+
+Premium Clothing
+
+Use responsive HTML.
+
+============================================================
+13. PRODUCT DATABASE
+============================================================
+
+Create Category:
+
+- id
+- name
+- slug
+- description
+- image
+- is_active
+- created_at
+- updated_at
+
+Category.slug must be unique.
+
+------------------------------------------------------------
+
+Create Product:
+
+- id
+- category
+- name
+- slug
+- description
+- base_price
+- is_active
+- featured
+- created_at
+- updated_at
+
+Product.slug must be unique.
+
+------------------------------------------------------------
+
+Create ProductImage:
+
+- id
+- product
+- image
+- alt_text
+- is_primary
+- display_order
+- created_at
+
+Support multiple images.
+
+------------------------------------------------------------
+
+Create ProductVariant:
+
+- id
+- product
+- size
+- color
+- stock
+- sku
+- price_override
+- is_active
+- created_at
+- updated_at
+
+SKU must be unique.
+
+Stock belongs to ProductVariant.
+
+Example:
+
+Premium Stretch Denim Jeans
+
+Variant:
+
+Size 30
+Color Blue
+Stock 15
+SKU EZ-JEAN-30-BLUE
+
+============================================================
+14. PRODUCT VALIDATION
+============================================================
+
+Prevent:
+
+- negative stock
+- negative price
+- invalid quantity
+- duplicate SKU
+- duplicate slug
+
+If stock == 0:
+
+Show:
+
+OUT OF STOCK
+
+Disable:
+
+ADD TO CART
+
+Backend must also reject ordering an unavailable variant.
+
+Never trust frontend stock validation.
+
+============================================================
+15. PRODUCT LISTING
+============================================================
+
+Create:
+
+/shop/
+
+Features:
+
+- product grid
+- category filter
+- size filter
+- color filter
+- price range
+- search
+- sorting
+- pagination
+
+Sorting:
+
+Featured
+Newest
+Price Low → High
+Price High → Low
+
+Use efficient ORM queries.
+
+Use:
+
+select_related()
+
+prefetch_related()
+
+where appropriate.
+
+Avoid N+1 queries.
+
+Desktop:
+
+Sidebar filters.
+
+Mobile:
+
+Filter drawer/modal.
+
+============================================================
+16. PRODUCT DETAIL
+============================================================
+
+Route:
+
+/product/<slug>/
+
+Show:
+
+- product image gallery
+- thumbnails
+- product name
+- category
+- price
+- size selector
+- color selector
+- quantity
+- stock status
+- Add to Cart
+- Buy Now
+- description
+- size guide
+- related products
+
+User must select a valid variant.
+
+If no variant is selected:
+
+Do not allow Add to Cart.
+
+If selected variant is out of stock:
+
+Disable Add to Cart.
+
+============================================================
+17. CART SYSTEM
+============================================================
+
+Models:
+
+Cart
+
+Fields:
+
+- id
+- user
+- created_at
+- updated_at
+
+One active cart per user.
+
+CartItem:
+
+- id
+- cart
+- product_variant
+- quantity
+- created_at
+- updated_at
+
+Constraint:
+
+unique(cart, product_variant)
+
+Quantity must be greater than zero.
+
+Cart persists for logged-in users.
+
+============================================================
+18. CART FUNCTIONALITY
+============================================================
+
+Implement:
+
+Add to Cart
+
+Update Quantity
+
+Remove Item
+
+Clear Cart
+
+Cart Count
+
+Cart Total
+
+Empty Cart
+
+Stock Validation
+
+Use Django messages.
+
+After Add to Cart:
+
+Show success message.
+
+Example:
+
+"Premium Stretch Denim Jeans added to your cart."
+
+Cart page:
+
+YOUR CART
+
+Each item:
+
+- image
+- product name
+- size
+- color
+- price
+- quantity
+- line total
+- remove button
+
+Order Summary:
+
+Subtotal
+Shipping
+Total
+
+Shipping:
+
+৳0
+
+============================================================
+19. CART SECURITY
+============================================================
+
+User A must NEVER access User B's cart.
+
+Never accept cart user ID from frontend.
+
+Always use:
+
+request.user
+
+Backend must determine ownership.
+
+============================================================
+20. ADDRESS SYSTEM
+============================================================
+
+Create Address model.
+
+Fields:
+
+- id
+- user
+- full_name
+- phone
+- full_address
+- area
+- is_default
+- created_at
+- updated_at
+
+Users can have multiple addresses.
+
+One address can be default.
+
+Phone validation:
+
+01XXXXXXXXX
+
+Backend validation is required.
+
+Frontend validation is only for user experience.
+
+============================================================
+21. CHECKOUT
+============================================================
+
+Route:
+
+/checkout/
+
+Login required.
+
+If user is not authenticated:
+
+redirect to login.
+
+Checkout sections:
+
+A. Order Summary
+
+B. Delivery Address
+
+C. Delivery Option
+
+D. Payment Method
+
+E. Place Order
+
+------------------------------------------------------------
+
+ORDER SUMMARY:
+
+Read-only.
+
+Show:
+
+Product
+Variant
+Quantity
+Price
+Subtotal
+
+------------------------------------------------------------
+
+DELIVERY ADDRESS:
+
+Full Name
+Phone Number
+Full Address
+Area
+Delivery Note
+
+Required:
+
+Full Name
+Phone
+Address
+Area
+
+Delivery Note:
+
+Optional.
+
+------------------------------------------------------------
+
+DELIVERY OPTION:
+
+Home Delivery:
+
+ACTIVE
+
+Store Pickup:
+
+Optional future feature.
+
+If Store Pickup is not implemented fully,
+do not pretend it works.
+
+------------------------------------------------------------
+
+PAYMENT:
+
+Cash on Delivery:
+
+ACTIVE
+
+bKash:
+
+DISABLED
+Coming Soon
+
+Nagad:
+
+DISABLED
+Coming Soon
+
+============================================================
+22. COD RULE
+============================================================
+
+Only COD is currently supported.
+
+Backend must accept only:
+
+COD
+
+If frontend sends:
+
+bkash
+nagad
+card
+paypal
+
+backend must reject it.
+
+Do NOT simulate payment success.
+
+Do NOT create fake transaction IDs.
+
+============================================================
+23. ORDER MODEL
+============================================================
+
+Create:
+
+Order
+
+Fields:
+
+- id
+- order_number
+- user
+- status
+- payment_method
+- total_amount
+- shipping_full_name
+- shipping_phone
+- shipping_address
+- shipping_area
+- note
+- created_at
+- updated_at
+
+Order number:
+
+EZ-YYYYMMDD-XXXX
+
+Example:
+
+EZ-20260923-0042
+
+Requirements:
+
+- unique
+- generated server-side
+- collision-safe
+
+Never trust frontend order number.
+
+------------------------------------------------------------
+
+Status:
+
+PENDING
+CONFIRMED
+PROCESSING
+SHIPPED
+DELIVERED
+CANCELLED
+
+Default:
+
+PENDING
+
+============================================================
+24. ORDER ITEM MODEL
+============================================================
+
+Create:
+
+OrderItem
+
+Fields:
+
+- id
+- order
+- product_variant
+- product_name_snapshot
+- size_snapshot
+- color_snapshot
+- quantity
+- price
+- subtotal
+
+IMPORTANT:
+
+Store historical snapshot data.
+
+If product name or price changes later,
+old orders must remain unchanged.
+
+Example:
+
+Today:
+
+Jeans = ৳69
+
+Later:
+
+Jeans = ৳79
+
+Old order must still show:
+
+৳69
+
+============================================================
+25. ORDER CREATION — CRITICAL
+============================================================
+
+Order creation must use:
+
+transaction.atomic()
+
+When creating order:
+
+1. Verify user is authenticated.
+2. Verify cart exists.
+3. Verify cart is not empty.
+4. Lock relevant ProductVariant rows.
+5. Re-check stock inside transaction.
+6. Calculate product prices from database.
+7. Calculate subtotal.
+8. Calculate shipping.
+9. Calculate total.
+10. Create Order.
+11. Create OrderItems.
+12. Reduce stock.
+13. Clear cart.
+14. Commit transaction.
+15. Send confirmation email after successful transaction.
+
+Never calculate final total from frontend.
+
+Never trust:
+
+frontend price
+frontend total
+frontend stock
+frontend user ID
+frontend order number
+
+============================================================
+26. CONCURRENT STOCK PROTECTION
+============================================================
+
+Use:
+
+select_for_update()
+
+where appropriate.
+
+Example:
+
+Stock = 1
+
+Customer A orders quantity 1.
+
+Customer B simultaneously orders quantity 1.
+
+Only one order should succeed.
+
+The other request must receive:
+
+"Sorry, this product is no longer available."
+
+Never allow negative stock.
+
+============================================================
+27. DOUBLE ORDER PROTECTION
+============================================================
+
+Prevent accidental duplicate orders.
+
+Frontend:
+
+Disable Place Order button after first click.
+
+Show loading state.
+
+Backend:
+
+Use transactional logic and appropriate protection.
+
+Email failure must NOT create a second order.
+
+============================================================
+28. ORDER CONFIRMATION
+============================================================
+
+After successful order:
+
+1. Order created.
+2. Cart cleared.
+3. Stock reduced.
+4. Redirect to:
+
+/order-success/<order_number>/
+
+Show:
+
+✓ ORDER PLACED SUCCESSFULLY
+
+Thank you for shopping with Export Zone.
+
+Order Number:
+
+EZ-20260923-0042
+
+Show:
+
+- Products
+- Quantity
+- Price
+- Subtotal
+- Shipping
+- Total
+- Payment method
+- Delivery address
+- Estimated delivery
+
+Buttons:
+
+TRACK ORDER
+
+CONTINUE SHOPPING
+
+COPY ORDER NUMBER
+
+============================================================
+29. ORDER CONFIRMATION EMAIL
+============================================================
+
+Send beautiful HTML email.
+
+Subject:
+
+Export Zone — Order Confirmation #EZ-20260923-0042
+
+Include:
+
+Customer Name
+
+Order Number
+
+Order Status:
+
+Pending
+
+Products:
+
+Product
+Size
+Color
+Quantity
+Price
+Subtotal
+
+Shipping:
+
+৳0
+
+Total:
+
+৳TOTAL
+
+Payment:
+
+Cash on Delivery
+
+Delivery:
+
+Full Name
+Phone
+Address
+Area
+
+Include button:
+
+VIEW MY ORDER
+
+If email fails:
+
+DO NOT rollback the order.
+
+The order remains successful.
+
+Log the email failure.
+
+============================================================
+30. CUSTOMER ACCOUNT
+============================================================
+
+Create:
+
+/account/
+
+Sections:
+
+Profile
+My Orders
+Addresses
+Change Password
+
+My Orders:
+
+/account/orders/
+
+Show:
+
+Order Number
+Date
+Total
+Status
+
+Order Detail:
+
+/account/orders/<order_number>/
+
+Customer can only access their own orders.
+
+Backend must enforce ownership.
+
+============================================================
+31. ORDER TRACKING
+============================================================
+
+Show visual timeline:
+
+Pending
+↓
+Confirmed
+↓
+Processing
+↓
+Shipped
+↓
+Delivered
+
+Highlight current status.
+
+If cancelled:
+
+Show:
+
+Cancelled
+
+Do not show Delivered after Cancelled.
+
+============================================================
+32. ADMIN
+============================================================
+
+Use Django Admin as a reliable backend administration system.
+
+Additionally, create a custom premium admin dashboard if practical.
+
+Admin sections:
+
+Dashboard
+Products
+Categories
+Orders
+Customers
+Reports
+Settings
+
+Dashboard statistics must come from real database data.
+
+Do NOT hard-code:
+
+128 orders
+$4756 revenue
+14 low stock
+
+Those values shown in the reference image are only design references.
+
+============================================================
+33. ADMIN DASHBOARD
+============================================================
+
+Dashboard cards:
+
+Today's Orders
+Today's Revenue
+Low Stock Items
+
+Sales Chart:
+
+Monthly Sales Overview
+
+Recent Orders:
+
+Order ID
+Customer
+Date
+Status
+Total
+Payment
+
+Use real database data.
+
+If no data exists:
+
+Show a clean empty state.
+
+============================================================
+34. ADMIN PRODUCT MANAGEMENT
+============================================================
+
+Admin can:
+
+- create category
+- edit category
+- deactivate category
+- create product
+- edit product
+- deactivate product
+- create variants
+- update stock
+- upload product images
+- set primary image
+- set featured product
+
+Avoid hard deleting products that are referenced by historical orders.
+
+Use deactivation/soft-delete where appropriate.
+
+============================================================
+35. ADMIN ORDER MANAGEMENT
+============================================================
+
+Admin can:
+
+- view orders
+- search orders
+- filter orders
+- view order details
+- change order status
+
+Search:
+
+Order number
+Email
+Phone
+
+Filter:
+
+Pending
+Confirmed
+Processing
+Shipped
+Delivered
+Cancelled
+
+Order status flow:
+
+Pending
+→ Confirmed
+→ Processing
+→ Shipped
+→ Delivered
+
+Cancelled should be handled according to valid business rules.
+
+Backend must validate status transitions.
+
+============================================================
+36. DJANGO ADMIN
+============================================================
+
+Register all major models:
+
+CustomUser
+Category
+Product
+ProductImage
+ProductVariant
+Cart
+CartItem
+Address
+Order
+OrderItem
+
+Add useful:
+
+list_display
+list_filter
+search_fields
+ordering
+readonly_fields
+
+Never expose passwords in admin.
+
+============================================================
+37. HOME PAGE
+============================================================
+
+Create:
+
+/
+
+Design based on uploaded reference.
+
+Sections:
+
+Header
+Hero
+Shop By Category
+Featured Products
+New Arrivals
+Premium Quality
+Why Export Zone
+Footer
+
+Hero:
+
+Premium Quality.
+Premium You.
+
+Description:
+
+Discover premium jeans, shirts and polo t-shirts crafted
+for comfort, style and distinction.
+
+CTA:
+
+SHOP NOW
+
+============================================================
+38. HEADER
+============================================================
+
+Desktop:
+
+Logo
+Home
+Jeans
+Shirts
+Polo T-Shirts
+New Arrivals
+Collections
+Search
+Cart
+Login / Account
+
+Mobile:
+
+Hamburger
+Logo
+Cart
+
+Cart badge must show real cart count.
+
+============================================================
+39. FOOTER
+============================================================
+
+Include:
+
+Export Zone
+
+Premium Clothing
+
+Quick Links:
+
+Home
+Shop
+About
+Contact
+My Account
+
+Customer Support
+
+Privacy Policy
+Terms & Conditions
+Return Policy
+
+Contact information:
+
+Meherpur, Bangladesh
+
+Do not invent fake phone numbers or emails.
+
+Use environment/configurable values where needed.
+
+============================================================
+40. ABOUT PAGE
+============================================================
+
+Create simple premium About page.
+
+Explain:
+
+Export Zone is a premium clothing e-commerce brand focused
+on quality, comfort, and modern style.
+
+Keep content professional.
+
+============================================================
+41. CONTACT PAGE
+============================================================
+
+Create contact page.
+
+Fields:
+
+Name
+Email
+Phone
+Message
+
+Use Django Form.
+
+Validate input.
+
+Use Django messages.
+
+Store messages in database if practical.
+
+Do not expose sensitive information.
+
+============================================================
+42. TAILWIND DESIGN
+============================================================
+
+Theme:
+
+Background:
+
+#0B0B0B
+#111827
+
+Gold:
+
+#D4AF37
+#F59E0B
+
+Text:
+
+White
+Gray
+
+Font:
+
+Inter or Poppins.
+
+Design characteristics:
+
+- thin borders
+- gold accents
+- subtle shadows
+- premium cards
+- smooth hover states
+- rounded corners
+- clean spacing
+- luxury fashion appearance
+
+Do not overuse animations.
+
+============================================================
+43. RESPONSIVE DESIGN
+============================================================
+
+Must work properly on:
+
+320px
+375px
+390px
+430px
+
+Tablet:
+
+768px
+
+Desktop:
+
+1024px
+1280px
+1440px+
+
+Mobile must be designed independently.
+
+Do not simply shrink desktop.
+
+Checkout must be comfortable on mobile.
+
+Buttons must be touch-friendly.
+
+============================================================
+44. JAVASCRIPT
+============================================================
+
+Use only:
+
+Alpine.js
+
+OR
+
+Vanilla JavaScript.
+
+Use JavaScript for:
+
+- quantity controls
+- mobile menu
+- filters
+- image gallery
+- size/color selection
+- cart interactions where necessary
+- modal
+- toast
+- password visibility
+- copy order number
+
+Do not turn the project into a SPA.
+
+============================================================
+45. DJANGO MESSAGES
+============================================================
+
+Use Django messages for:
+
+Success
+Error
+Warning
+Info
+
+Examples:
+
+"Product added to cart."
+
+"Cart updated successfully."
+
+"Order placed successfully."
+
+"Invalid login credentials."
+
+"Your email has been verified."
+
+"Your password has been changed."
+
+============================================================
+46. ERROR HANDLING
+============================================================
+
+Handle properly:
+
+400
+403
+404
+500
+
+Create custom error pages:
+
+404.html
+403.html
+500.html
+
+Do not show debug traceback in production.
+
+Frontend should never display raw exceptions.
+
+============================================================
+47. SECURITY
+============================================================
+
+Implement:
+
+- CSRF protection
+- secure password hashing
+- authentication
+- authorization
+- ownership validation
+- secure file uploads
+- environment variables
+- production security settings
+- secure cookies where appropriate
+- XSS-safe templates
+- ORM-based queries
+- no raw SQL unless absolutely necessary
+
+Never store:
+
+plain-text passwords
+secret keys
+SMTP passwords
+
+in source code.
+
+============================================================
+48. DATABASE PERFORMANCE
+============================================================
+
+Avoid N+1 queries.
+
+Use:
+
+select_related()
+
+prefetch_related()
+
+where appropriate.
+
+Add database indexes to frequently queried fields.
+
+Examples:
+
+Product.slug
+Product.category
+Product.is_active
+ProductVariant.sku
+ProductVariant.product
+Order.order_number
+Order.user
+Order.status
+Order.created_at
+
+Do not add unnecessary indexes.
+
+============================================================
+49. IMAGE HANDLING
+============================================================
+
+Use Pillow.
+
+Validate uploaded images.
+
+Limit reasonable file sizes.
+
+Support:
+
+- product image
+- multiple product images
+- primary image
+- alt text
+
+Use proper media configuration.
+
+Do not commit media files to Git.
+
+============================================================
+50. FORM VALIDATION
+============================================================
+
+Use Django Forms.
+
+Validate:
+
+Email
+Phone
+Password
+Confirm password
+Quantity
+Address
+SKU
+Price
+Stock
+Order status
+
+Phone:
+
+Bangladesh format:
+
+01XXXXXXXXX
+
+Do not depend only on frontend validation.
+
+============================================================
+51. URL ARCHITECTURE
+============================================================
+
+Use proper namespaces.
+
+Example:
+
+accounts:
+accounts:login
+accounts:register
+accounts:logout
+
+store:
+store:home
+store:shop
+store:product_detail
+
+cart:
+cart:detail
+cart:add
+cart:update
+cart:remove
+
+orders:
+orders:checkout
+orders:create
+orders:success
+orders:my_orders
+orders:detail
+
+Do not create conflicting URL names.
+
+============================================================
+52. URLS
+============================================================
+
+Expected routes:
+
+/
+ /shop/
+/product/<slug>/
+/cart/
+/checkout/
+/order-success/<order_number>/
+/account/
+/account/orders/
+/account/orders/<order_number>/
+/login/
+/register/
+/logout/
+/verify-email/<token>/
+/forgot-password/
+/reset-password/<uid>/<token>/
+/about/
+/contact/
+
+You may adjust exact paths if needed,
+but keep them clean and intuitive.
+
+============================================================
+53. ORDER OWNERSHIP SECURITY
+============================================================
+
+Customer A must NEVER access:
+
+Customer B's:
+
+- cart
+- address
+- order
+- account data
+
+Always filter by:
+
+request.user
+
+Example:
+
+Order.objects.filter(user=request.user)
+
+Never trust:
+
+?user_id=
+POST user_id
+URL user_id
+
+from the client.
+
+============================================================
+54. SEED DATA
+============================================================
+
+Create:
+
+python manage.py seed_data
+
+Seed categories:
+
+Jeans
+T-Shirts
+Formal Shirts
+Polo T-Shirts
+Hoodies
+Outerwear
+Accessories
+
+Create realistic demo products.
+
+Variants:
+
+Sizes:
+
+28
+30
+32
+34
+36
+38
+40
+42
+
+Colors:
+
+Black
+Blue
+Navy
+White
+Gray
+Beige
+Green
+
+Use generic product names.
+
+Do not use copyrighted brand names.
+
+============================================================
+55. SUPERUSER
+============================================================
+
+Do not hard-code admin credentials.
+
+Use:
+
+python manage.py createsuperuser
+
+Document the process in README.
+
+============================================================
+56. TESTING
+============================================================
+
+Write automated tests.
+
+Authentication:
+
+- registration
+- duplicate email
+- duplicate phone
+- login by email
+- login by phone
+- wrong password
+- email verification
+- password reset
+- protected pages
+- logout
+
+Products:
+
+- category creation
+- product creation
+- variant creation
+- SKU uniqueness
+- stock validation
+
+Cart:
+
+- add item
+- update quantity
+- remove item
+- clear cart
+- empty cart
+- stock validation
+- ownership
+
+Checkout:
+
+- authentication required
+- empty cart rejected
+- invalid address rejected
+- invalid payment rejected
+
+Orders:
+
+- successful order
+- order number
+- total calculation
+- order item snapshot
+- stock reduction
+- cart clearing
+- ownership
+- insufficient stock
+- transaction behavior
+- status transitions
+
+Email:
+
+- verification email
+- reset email
+- order confirmation email
+
+Admin:
+
+- unauthorized customer blocked
+- staff allowed
+- order status update
+
+============================================================
+57. TEST DATA
+============================================================
+
+Tests must not depend on manually created database data.
+
+Use:
+
+setUp()
+
+factory methods
+
+or pytest fixtures.
+
+Tests should create their own data.
+
+============================================================
+58. REQUIREMENTS.TXT
+============================================================
+
+Keep dependencies minimal.
+
+Include only packages actually required.
+
+Example categories:
+
+Django
+Pillow
+python-dotenv
+
+pytest
+pytest-django
+
+Do not add unnecessary packages.
+
+============================================================
+59. ENVIRONMENT VARIABLES
+============================================================
+
+Create:
+
+.env.example
+
+Include:
+
+SECRET_KEY=
+DEBUG=True
+
+DATABASE_URL=
+
+EMAIL_BACKEND=
+EMAIL_HOST=
+EMAIL_PORT=
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+EMAIL_USE_TLS=
+DEFAULT_FROM_EMAIL=
+
+SITE_URL=
+
+Do not commit .env.
+
+============================================================
+60. README
+============================================================
+
+Create professional README.
+
+Include:
+
+Project Overview
+Features
+Tech Stack
+Folder Structure
+Installation
+Virtual Environment
+Dependencies
+Environment Variables
+Database Setup
+Migrations
+Seed Data
+Superuser
+Run Server
+Run Tests
+Email Configuration
+Media Configuration
+Production Notes
+
+Commands:
+
+python -m venv venv
+
+pip install -r requirements.txt
+
+python manage.py migrate
+
+python manage.py seed_data
+
+python manage.py createsuperuser
+
+python manage.py runserver
+
+pytest
+
+============================================================
+61. PRODUCTION READINESS
+============================================================
+
+Prepare for production.
+
+Separate:
+
+Development settings
+Production considerations
+
+Ensure:
+
+DEBUG=False works.
+
+STATIC_ROOT configured.
+
+MEDIA configured.
+
+ALLOWED_HOSTS configurable.
+
+CSRF_TRUSTED_ORIGINS configurable.
+
+Secret key from environment.
+
+Database configurable.
+
+SMTP configurable.
+
+Do not assume SQLite is production database.
+
+Project must remain PostgreSQL-ready.
+
+============================================================
+62. CODE QUALITY
+============================================================
+
+Write clean code.
+
+Use:
+
+- meaningful names
+- reusable functions
+- comments for important logic
+- type hints where useful
+- PEP8 style
+- small views
+- service functions for complex business logic
+
+Avoid:
+
+- giant views
+- duplicated logic
+- magic numbers
+- hard-coded totals
+- hard-coded user IDs
+- hard-coded prices
+- unnecessary abstractions
+
+Complex business logic should be moved into:
+
+services.py
+
+where appropriate.
+
+============================================================
+63. IMPORTANT ORDER SERVICE
+============================================================
+
+Prefer a dedicated service such as:
+
+orders/services.py
+
+with a function conceptually similar to:
+
+create_order_from_cart()
+
+Responsibilities:
+
+- validate cart
+- validate variants
+- lock stock
+- calculate totals
+- create order
+- create order items
+- decrease stock
+- clear cart
+
+Keep the transaction in one controlled place.
+
+============================================================
+64. EMAIL SERVICE
+============================================================
+
+Prefer reusable functions such as:
+
+send_verification_email()
+send_password_reset_email()
+send_order_confirmation_email()
+
+Email errors must be logged.
+
+Order success must not depend on email success.
+
+============================================================
+65. ADMIN ORDER STATUS
+============================================================
+
+Create controlled status transitions.
+
+Valid normal flow:
+
+PENDING
+→ CONFIRMED
+→ PROCESSING
+→ SHIPPED
+→ DELIVERED
+
+Cancellation:
+
+PENDING → CANCELLED
+CONFIRMED → CANCELLED
+PROCESSING → CANCELLED
+
+Only allow business-valid transitions.
+
+Do not allow:
+
+DELIVERED → PROCESSING
+
+unless there is an explicit business rule.
+
+============================================================
+66. NO FAKE FUNCTIONALITY
+============================================================
+
+This is extremely important.
+
+Do NOT create UI that appears functional when backend
+functionality does not exist.
+
+Examples:
+
+Do not show successful payment for bKash.
+
+Do not show fake sales data.
+
+Do not show fake orders.
+
+Do not show fake stock.
+
+Do not show fake customer data.
+
+If something is not implemented:
+
+Clearly mark it as:
+
+Coming Soon
+
+or
+
+Not Available
+
+============================================================
+67. DEVELOPMENT WORKFLOW
+============================================================
+
+For EVERY phase:
+
+STEP 1
+Implement the feature.
+
+STEP 2
+Check imports.
+
+STEP 3
+Run:
+
+python manage.py check
+
+STEP 4
+Run migrations:
+
+python manage.py makemigrations
+python manage.py migrate
+
+STEP 5
+Run tests.
+
+STEP 6
+Start server.
+
+STEP 7
+Test URLs and forms.
+
+STEP 8
+Fix errors.
+
+STEP 9
+Review security.
+
+STEP 10
+Review responsive UI.
+
+STEP 11
+Only then continue.
+
+============================================================
+68. ERROR DEBUGGING RULE
+============================================================
+
+When an error occurs:
+
+DO NOT hide it.
+
+DO NOT remove the feature.
+
+DO NOT create a fake response.
+
+DO NOT randomly delete migrations.
+
+DO NOT rewrite unrelated code.
+
+Instead:
+
+1. Read traceback.
+2. Identify root cause.
+3. Fix root cause.
+4. Re-run test.
+5. Verify related functionality.
+6. Continue.
+
+============================================================
+69. MIGRATION RULE
+============================================================
+
+Never blindly delete migration files.
+
+If migration problems occur:
+
+- inspect migration history
+- inspect model changes
+- fix dependencies
+- create proper migrations
+- migrate safely
+
+============================================================
+70. FRONTEND QUALITY
+============================================================
+
+Every page must have:
+
+- loading/processing feedback where appropriate
+- validation errors
+- empty states
+- success states
+- error states
+
+Forms must clearly show validation errors.
+
+Buttons should have disabled/loading states.
+
+============================================================
+71. CART UI
+============================================================
+
+Follow reference image.
+
+Cart should contain:
+
+Product image
+Product name
+Size
+Color
+Price
+Quantity controls
+Remove icon
+
+Order Summary:
+
+Subtotal
+Shipping
+Total
+
+CTA:
+
+PROCEED TO CHECKOUT
+
+Mobile:
+
+Use stacked layout.
+
+============================================================
+72. CHECKOUT UI
+============================================================
+
+Follow reference image.
+
+Sections:
+
+ORDER SUMMARY
+
+DELIVERY DETAILS
+
+DELIVERY OPTION
+
+PAYMENT METHOD
+
+PLACE ORDER
+
+Payment:
+
+COD:
+ACTIVE
+
+bKash:
+DISABLED
+
+Nagad:
+DISABLED
+
+Button:
+
+PLACE ORDER • ৳TOTAL
+
+Show:
+
+Secure Checkout
+
+============================================================
+73. PRODUCT DETAIL UI
+============================================================
+
+Follow reference image.
+
+Show:
+
+Image gallery
+
+Product name
+
+Price
+
+Rating placeholder only if review system is not implemented.
+
+Size buttons
+
+Color options
+
+Stock
+
+Quantity
+
+ADD TO CART
+
+BUY NOW
+
+Description
+
+Size Guide
+
+Related Products
+
+============================================================
+74. SHOP PAGE UI
+============================================================
+
+Follow reference.
+
+Desktop:
+
+Left filter sidebar
+
+Right product grid
+
+Mobile:
+
+Filter drawer
+
+Product cards:
+
+Image
+Name
+Price
+Color options
+Wishlist icon if implemented
+
+Quick View may be implemented if useful.
+
+============================================================
+75. MOBILE HOME
+============================================================
+
+Follow mobile reference.
+
+Mobile navigation:
+
+Menu
+Logo
+Cart
+
+Hero:
+
+Premium Quality
+
+Shop Now
+
+Category cards
+
+Featured products
+
+Bottom navigation may be used if it improves UX.
+
+============================================================
+76. DESKTOP HOME
+============================================================
+
+Follow desktop reference.
+
+Premium hero section.
+
+Shop By Category.
+
+Featured Products.
+
+Elegant dark background.
+
+Gold CTA.
+
+============================================================
+77. FUTURE-READY FEATURES
+============================================================
+
+Architecture should allow future addition of:
+
+- bKash
+- Nagad
+- online payment
+- coupons
+- discounts
+- wishlist
+- reviews
+- multiple shipping addresses
+- guest checkout
+- delivery charge
+- SMS
+- WhatsApp notification
+
+But DO NOT implement these now unless explicitly requested.
+
+Do not over-engineer future features.
+
+============================================================
+78. CURRENT VERSION SCOPE
+============================================================
+
+CURRENT VERSION MUST SUPPORT:
+
+Authentication
+Email verification
+Login
+Logout
+Password reset
+Products
+Variants
+Images
+Categories
+Cart
+Address
+Checkout
+COD
+Order creation
+Order confirmation
+Order confirmation email
+Customer order history
+Order tracking
+Admin product management
+Admin order management
+Responsive UI
+
+CURRENT VERSION MUST NOT SUPPORT:
+
+bKash payment
+Nagad payment
+Online payment
+Guest checkout
+Coupon
+Advanced review system
+SMS
+WhatsApp
+
+============================================================
+79. FINAL END-TO-END TEST
+============================================================
+
+Before declaring the project complete, perform this exact flow:
+
+TEST 1:
+
+Register
+
+↓
+
+Verification email
+
+↓
+
+Verify email
+
+↓
+
+Login
+
+↓
+
+Account
+
+------------------------------------------------------------
+
+TEST 2:
+
+Open Shop
+
+↓
+
+Filter products
+
+↓
+
+Open Product Detail
+
+↓
+
+Select Size
+
+↓
+
+Select Color
+
+↓
+
+Select Quantity
+
+↓
+
+Add to Cart
+
+------------------------------------------------------------
+
+TEST 3:
+
+Cart
+
+↓
+
+Update quantity
+
+↓
+
+Remove item
+
+↓
+
+Check subtotal
+
+↓
+
+Proceed Checkout
+
+------------------------------------------------------------
+
+TEST 4:
+
+Checkout
+
+↓
+
+Select address
+
+↓
+
+Enter delivery information
+
+↓
+
+COD selected
+
+↓
+
+bKash disabled
+
+↓
+
+Nagad disabled
+
+↓
+
+Place Order
+
+------------------------------------------------------------
+
+TEST 5:
+
+Order creation
+
+↓
+
+Order number generated
+
+↓
+
+Order status = Pending
+
+↓
+
+Stock reduced
+
+↓
+
+Cart cleared
+
+↓
+
+Confirmation page
+
+↓
+
+Confirmation email
+
+------------------------------------------------------------
+
+TEST 6:
+
+Account
+
+↓
+
+My Orders
+
+↓
+
+Open order
+
+↓
+
+Track order
+
+------------------------------------------------------------
+
+TEST 7:
+
+Admin
+
+↓
+
+Login
+
+↓
+
+Dashboard
+
+↓
+
+Orders
+
+↓
+
+Open order
+
+↓
+
+Pending
+
+↓
+
+Confirmed
+
+↓
+
+Processing
+
+↓
+
+Shipped
+
+↓
+
+Delivered
+
+------------------------------------------------------------
+
+TEST 8:
+
+Security
+
+Customer A cannot access Customer B's:
+
+- cart
+- order
+- address
+
+Unauthenticated user cannot:
+
+- checkout
+- create order
+
+Invalid stock cannot be ordered.
+
+Negative quantity cannot be submitted.
+
+Unsupported payment cannot be submitted.
+
+Double click cannot create duplicate order.
+
+============================================================
+80. FINAL DEFINITION OF DONE
+============================================================
+
+Do NOT say:
+
+"Project completed"
+
+until all of the following are true:
+
+[ ] Django check passes
+[ ] Migrations work
+[ ] Database works
+[ ] Authentication works
+[ ] Email verification works
+[ ] Login by email works
+[ ] Login by phone works
+[ ] Logout works
+[ ] Password reset works
+[ ] Product CRUD works
+[ ] Variant system works
+[ ] Image upload works
+[ ] Product listing works
+[ ] Filters work
+[ ] Product detail works
+[ ] Cart works
+[ ] Stock validation works
+[ ] Checkout works
+[ ] COD works
+[ ] Order creation works
+[ ] Order number works
+[ ] Cart clears after order
+[ ] Stock decreases correctly
+[ ] Order confirmation email works
+[ ] Customer order history works
+[ ] Order tracking works
+[ ] Admin dashboard works
+[ ] Admin order management works
+[ ] Permissions work
+[ ] Tests pass
+[ ] Responsive UI works
+[ ] No known blocking errors
+[ ] README is complete
+[ ] .env.example exists
+[ ] Production settings are documented
+
+============================================================
+81. FINAL RESPONSE FORMAT
+============================================================
+
+When a phase is completed, report:
+
+PHASE:
+What was implemented.
+
+FILES CREATED:
+List important files.
+
+DATABASE:
+Models/migrations created.
+
+URLS:
+Routes added.
+
+TESTS:
+Tests executed.
+
+RESULT:
+PASS / FAIL
+
+ERRORS FIXED:
+List important issues and fixes.
+
+NEXT PHASE:
+What will be implemented next.
+
+Do not dump thousands of lines of code into one response
+without structure.
+
+============================================================
+82. START NOW
+============================================================
+
+START WITH PHASE 1 ONLY.
+
+First:
+
+1. Confirm understanding briefly.
+2. Show the complete folder structure.
+3. Create Django project configuration.
+4. Configure settings.
+5. Configure SQLite.
+6. Configure static/media.
+7. Configure environment variables.
+8. Configure Tailwind.
+9. Configure base template architecture.
+10. Create requirements.txt.
+11. Run:
+
+python manage.py check
+
+12. Fix all errors.
+
+DO NOT implement Products, Cart, Checkout or Orders yet.
+
+After Phase 1 is fully verified,
+continue to Phase 2.
+
+Remember:
+
+BUILD
+↓
+RUN
+↓
+TEST
+↓
+DEBUG 
+↓
+FIX
+↓
+VERIFY
+↓
+NEXT PHASE
+
+Never skip this process.
+
+============================================================
+END OF MASTER PROMPT
+============================================================
+
+

@@ -1,0 +1,19 @@
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav class="shop-pagination" aria-label="Pagination">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+    {% endif %}
+
+    {% for page_num in page_obj.paginator.page_range %}
+      {% if page_obj.number == page_num %}
+        <span class="current">{{ page_num }}</span>
+      {% elif page_num > page_obj.number|add:-3 and page_num < page_obj.number|add:3 %}
+        <a href="?page={{ page_num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ page_num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+    {% endif %}
+  </nav>
+{% endif %}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Access denied | Export Zone</title>
+    <style>
+        :root { color-scheme: dark; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #08090b; color: #f4efe6; text-align: center; font-family: "Segoe UI", system-ui, sans-serif; padding: 2rem; }
+        main { max-width: 34rem; }
+        .code { margin: 0; font-size: clamp(4.5rem, 18vw, 8rem); font-weight: 800; letter-spacing: 0.08em; color: #d9b45a; line-height: 1; }
+        h1 { margin: 1rem 0 0.75rem; font-size: 1.4rem; letter-spacing: 0.18em; text-transform: uppercase; }
+        p { margin: 0 0 2rem; color: rgba(244, 239, 230, 0.55); line-height: 1.7; font-size: 0.95rem; }
+        .actions { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+        .actions a { display: inline-block; padding: 0.9rem 2.4rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; text-decoration: none; border: 1px solid #d9b45a; }
+        .actions a.primary { background: linear-gradient(90deg, #ba8428, #d9b45a, #b67e25); color: #0d0d0d; }
+        .actions a.ghost { color: #d9b45a; }
+    </style>
+</head>
+<body>
+    <main>
+        <p class="code">403</p>
+        <h1>Access denied</h1>
+        <p>You do not have permission to view this page. Sign in with an authorised account, or return to the storefront and try again.</p>
+        <div class="actions">
+            <a class="primary" href="{% url 'store:home' %}">Back to home</a>
+            <a class="ghost" href="{% url 'accounts:login' %}">Sign in</a>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,116 @@
+{% extends "admin_dashboard/base.html" %}
+{% load seo_tags static %}
+{% block seo_head %}{% push_seo title="Dashboard" %}{% seo_meta %}{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block content %}
+<div class="admin-welcome">
+    <div>
+        <p class="text-[0.55rem] uppercase tracking-[0.4em] text-gold/80">Admin overview</p>
+        <h2>Welcome back, {{ user.full_name|default:"Administrator" }}</h2>
+        <p>Orders, catalogue health and revenue at a glance.</p>
+    </div>
+    <span class="admin-date-chip">{% now "l, F j, Y" %}</span>
+</div>
+
+<div class="admin-hero-grid">
+    <article class="admin-hero-card">
+        <span class="admin-hero-icon" aria-hidden="true">৳</span>
+        <div>
+            <small>Total revenue</small>
+            <strong>৳{{ stats.total_revenue|floatformat:2 }}</strong>
+            <a href="{% url 'admin_dashboard:orders' %}">View all orders &rarr;</a>
+        </div>
+    </article>
+    <article class="admin-hero-card">
+        <span class="admin-hero-icon" aria-hidden="true">&#9636;</span>
+        <div>
+            <small>Total orders</small>
+            <strong>{{ stats.total_orders }}</strong>
+            <a href="{% url 'admin_dashboard:orders' %}">Manage orders &rarr;</a>
+        </div>
+    </article>
+    <article class="admin-hero-card">
+        <span class="admin-hero-icon" aria-hidden="true">&#8987;</span>
+        <div>
+            <small>Pending review</small>
+            <strong>{{ stats.pending_orders }}</strong>
+            <a href="{% url 'admin_dashboard:orders' %}?status=PENDING">Open queue &rarr;</a>
+        </div>
+    </article>
+</div>
+
+<div class="admin-chip-grid">
+    <div class="admin-chip"><small>Today orders</small><strong>{{ stats.today_orders }}</strong></div>
+    <div class="admin-chip"><small>Today revenue</small><strong>৳{{ stats.today_revenue|floatformat:2 }}</strong></div>
+    <div class="admin-chip"><small>Processing</small><strong>{{ stats.processing_orders }}</strong></div>
+    <div class="admin-chip"><small>Shipped</small><strong>{{ stats.shipped_orders }}</strong></div>
+    <div class="admin-chip"><small>Delivered</small><strong>{{ stats.delivered_orders }}</strong></div>
+    <div class="admin-chip"><small>Cancelled</small><strong>{{ stats.cancelled_orders }}</strong></div>
+    <div class="admin-chip"><small>Products</small><strong>{{ stats.total_products }}</strong></div>
+    <div class="admin-chip"><small>Units in stock</small><strong>{{ stats.total_stock_units }}</strong></div>
+    <div class="admin-chip"><small>Out of stock</small><strong>{{ stats.out_of_stock_variants }}</strong></div>
+    <div class="admin-chip"><small>Low stock</small><strong><a href="{% url 'admin_dashboard:low_stock' %}" class="hover:text-gold">{{ stats.low_stock_products }}</a></strong></div>
+    <div class="admin-chip"><small>Customers</small><strong>{{ stats.total_customers }}</strong></div>
+</div>
+
+<div class="admin-quick-actions mb-6 flex flex-wrap gap-3">
+    <a class="button button-gold" href="{% url 'admin_dashboard:product_add' %}">Add product</a>
+    <a class="button button-outline" href="{% url 'admin_dashboard:products' %}">Manage products</a>
+    <a class="button button-outline" href="{% url 'admin_dashboard:orders' %}">Manage orders</a>
+    <a class="button button-outline" href="{% url 'admin_dashboard:customers' %}">Manage customers</a>
+</div>
+<div class="grid gap-6 lg:grid-cols-2">
+    <section class="admin-panel">
+        <div class="admin-panel-heading">
+            <h2>Sales overview</h2>
+            <span class="admin-muted">Last 6 months</span>
+        </div>
+        {% if monthly_sales %}
+        <div class="admin-chart">
+            {% for entry in monthly_sales %}
+            <div class="admin-chart-col">
+                <b title="{{ entry.revenue|floatformat:2 }}">৳{{ entry.revenue|floatformat:0 }}</b>
+                <div class="admin-chart-bar" style="height: {{ entry.pct }}%"></div>
+                <span>{{ entry.label|slice:":3" }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="admin-empty-chart">No sales data yet.</div>
+        {% endif %}
+    </section>
+
+    <section class="admin-panel">
+        <div class="admin-panel-heading">
+            <h2>Recent orders</h2>
+            <a href="{% url 'admin_dashboard:orders' %}" class="text-[0.62rem] uppercase tracking-[0.2em] text-gold transition hover:text-pale-gold">View all &rarr;</a>
+        </div>
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Status</th><th>Total</th></tr></thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td><a href="{% url 'admin_dashboard:order_detail' order.order_number %}">{{ order.order_number }}</a></td>
+                        <td>{{ order.user.full_name }}</td>
+                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                        <td><span class="status-badge status-{{ order.status|lower }}">{{ order.get_status_display }}</span></td>
+                        <td>৳{{ order.total_amount|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="admin-empty">No orders yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<section class="admin-panel mt-6">
+    <div class="admin-panel-heading">
+        <h2>Stock watch</h2>
+        <a href="{% url 'admin_dashboard:low_stock' %}" class="text-[0.62rem] uppercase tracking-[0.2em] text-gold transition hover:text-pale-gold">Low stock list &rarr;</a>
+    </div>
+    <p class="admin-muted"><strong>{{ stats.total_stock_units }}</strong> unit{{ stats.total_stock_units|pluralize }} in stock across {{ stats.total_products }} product{{ stats.total_products|pluralize }} &middot; {{ stats.out_of_stock_variants }} variant{{ stats.out_of_stock_variants|pluralize }} out of stock &middot; {{ stats.low_stock_products }} at or below the reorder threshold &middot; {{ stats.total_customers }} registered customer{{ stats.total_customers|pluralize }}.</p>
+</section>
+{% endblock %}
