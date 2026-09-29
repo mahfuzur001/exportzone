@@ -4,7 +4,7 @@ Premium clothing e-commerce for Meherpur, Bangladesh, built as a server-rendered
 
 ## Technology
 
-- Python 3.12+ and Django 5
+- Python 3.10+ and Django 5.2 (the shared host runs the version pinned in `exportzone/runtime.txt`)
 - Django templates with Tailwind CSS and progressive vanilla JavaScript (no React, no REST API)
 - SQLite as the single supported database
 - Pillow for images and python-dotenv for environment configuration

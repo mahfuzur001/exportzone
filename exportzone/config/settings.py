@@ -152,10 +152,15 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    # {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    # {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    # {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    # {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    # A shop account is reachable by email OR phone, so the validators matter more
+    # here than in a typical project: without them a one-character password would be
+    # accepted at signup and at every password reset.
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 LANGUAGE_CODE = "en-us"
@@ -351,6 +356,13 @@ if env_bool("TRUST_X_FORWARDED_PROTO", False):
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+# Order URLs leak the admin/cart paths to third parties through the Referer header;
+# the strict-origin form keeps the site itself usable while dropping the path.
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+# The storefront loads only its own CSS/JS/images and one external font CDN, so the
+# policy can stay narrow. Report problems instead of silently dropping a browser
+# feature nobody would notice losing.
+PERMISSIONS_POLICY = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
 
 # Passenger sends application output to the account's passenger log; a custom
 # LOG_FILE is offered for hosts that only expose a file (and the `file` handler

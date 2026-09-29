@@ -138,7 +138,7 @@ cd 'e:\django-backend\ÊXport Zøne'
 | Application URL | `example.com` (অথবা `shop.example.com`) |
 | Application root | `exportzone` — **স্ল্যাশ ছাড়া, তুলনামূলক পাথ** |
 | Deployment method | **Manual** (`cPanel Dispatch` নয়) |
-| Python version | `runtime.txt`-এ যা আছে (`python-3.12.8`) |
+| Python version | `runtime.txt`-এ যা আছে (`python-3.10`) |
 
 **“Add Python App”** চাপুন। এরপর **“Run Upgrade”** চাপলে cPanel `requirements.txt` পড়ে
 `venv/` ভার্চুয়াল এনভায়রন্টমেন্ট বানাবে।
@@ -264,7 +264,7 @@ e:\django-backend\ÊXport Zøne\
     ├── manage.py
     ├── passenger_wsgi.py                  Passenger এটাই চালায়
     ├── .htaccess                          সিক্রেট ফাইল আটকায়
-    ├── runtime.txt                        Python 3.12.8
+    ├── runtime.txt                        Python 3.10
     ├── requirements.txt                   শুধু ৪টি রানটাইম প্যাকেজ
     ├── .env                               (স্ক্রিপ্ট তৈরি করে)
     ├── .secret_key                        (স্ক্রিপ্ট তৈরি করে)
